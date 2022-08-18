@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
+  logging:
+    level:
+      org:
+        springframework.web: debug
+  sql:
+    init:
+      schema-locations: classpath*:static/schema.sql
