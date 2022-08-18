@@ -16,5 +16,4 @@ public class Temp {
     @Column(name = "id")
     private Long id;
 
-
 }
