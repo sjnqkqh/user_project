@@ -4,6 +4,7 @@ CREATE TABLE temp(
 
 CREATE TABLE TB_USER(
     user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    login_id VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     enc_password VARCHAR(100) NOT NULL,
     user_name VARCHAR(40) NOT NULL,
