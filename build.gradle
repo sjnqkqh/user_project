@@ -21,7 +21,9 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
-
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -29,9 +31,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.security:spring-security-test'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
@@ -39,16 +38,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
-	/* JWT Token 관련 */
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-}
-
-/* Spring Rest Docs 관련 */
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
 }
 
 tasks.named('test') {
@@ -59,23 +48,4 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
-}
-
-
-bootJar.doFirst {
-	// 생성된 문서를 src/main/resources/templates/ 에 복사
-	copy {
-		from "${asciidoctor.outputDir}"
-		into "src/main/resources/templates/"
-	}
-	// Build 시 사용할 문서를 저장
-	copy {
-		from "${asciidoctor.outputDir}"
-		into "build/resources/main/templates/"
-	}
-}
-
-bootJar {
-	// 빌드 전 문서 생성 확인
-	dependsOn asciidoctor
 }
