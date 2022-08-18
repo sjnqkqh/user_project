@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Getter;
 
-@Entity(name = "temp")
+@Entity
 @Getter
 public class Temp {
 
@@ -16,7 +16,5 @@ public class Temp {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email")
-    private String email;
 
 }
