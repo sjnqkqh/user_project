@@ -1,23 +1,25 @@
 package com.challenge.ably.domain;
 
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
-import lombok.Builder;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 
 @Entity
 @Getter
+@Table(name = "tb_user")
 @NoArgsConstructor
-public class User {
+public class User extends CommonBaseDateTime{
 
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
     @Column(name = "login_id")
@@ -29,7 +31,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "user_nickname")
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "enc_phone")
@@ -38,17 +40,8 @@ public class User {
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-
-    @Builder
-    public User(UserCreateReqDto reqDto){
+    public User(UserCreateReqDto reqDto) {
         this.loginId = reqDto.getLoginId();
         this.encryptedPassword = reqDto.getOriginPassword(); // FIXME Password hash
         this.email = reqDto.getEmail(); // FIXME Email Encrypt

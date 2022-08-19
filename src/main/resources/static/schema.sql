@@ -7,8 +7,8 @@ CREATE TABLE TB_USER(
     login_id VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     enc_password VARCHAR(100) NOT NULL,
-    user_name VARCHAR(40) NOT NULL,
-    enc_tel VARCHAR(50) NOT NULL,
+    nickname VARCHAR(40) NOT NULL,
+    enc_phone VARCHAR(50) NOT NULL,
     refresh_token VARCHAR(100) NULL,
     created_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP,
     updated_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP
