@@ -3,6 +3,8 @@ package com.challenge.ably.dto.user.req;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.challenge.ably.domain.User;
 import lombok.Getter;
 
 @Getter
@@ -19,7 +21,7 @@ public class UserCreateReqDto {
     private String originPassword;
 
     @NotBlank
-    @Size(min = 1, max = 40)
+    @Size(min = 1, max = 20)
     private String nickname;
 
     @NotBlank
