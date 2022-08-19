@@ -8,15 +8,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+      use-new-id-generator-mappings: false
     show-sql: true
   h2:
     console:
       enabled: true
 
-  logging:
-    level:
-      org:
-        springframework.web: debug
   sql:
     init:
       schema-locations: classpath*:static/schema.sql

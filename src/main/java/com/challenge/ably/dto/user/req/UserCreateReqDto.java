@@ -1,10 +1,9 @@
 package com.challenge.ably.dto.user.req;
 
-import lombok.Getter;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.Getter;
 
 @Getter
 public class UserCreateReqDto {
