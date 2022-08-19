@@ -1,25 +1,22 @@
 package com.challenge.ably.domain;
 
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.challenge.ably.util.YnCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 
 @Entity
 @Getter
-@Table(name = "tb_user")
+@Table(name = "TB_USER")
 @NoArgsConstructor
-public class User extends CommonBaseDateTime{
+public class User extends CommonBaseDateTime {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long userId;
 
     @Column(name = "login_id")
@@ -40,6 +37,10 @@ public class User extends CommonBaseDateTime{
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Column(name = "delete_yn")
+    @Enumerated(EnumType.STRING)
+    private YnCode deleteYn;
+
 
     public User(UserCreateReqDto reqDto) {
         this.loginId = reqDto.getLoginId();
@@ -47,6 +48,7 @@ public class User extends CommonBaseDateTime{
         this.email = reqDto.getEmail(); // FIXME Email Encrypt
         this.nickname = reqDto.getNickname();
         this.encryptedPhone = reqDto.getPhone(); // FIXME Phone Encrypt
+        this.deleteYn = YnCode.Y;
     }
 
 }
