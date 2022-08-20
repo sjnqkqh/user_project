@@ -1,13 +1,16 @@
 package com.challenge.ably.controller;
 
+import com.challenge.ably.config.CommonException;
 import com.challenge.ably.dto.CommonRespDto;
 import com.challenge.ably.dto.user.req.CheckLoginIdReqDto;
-import com.challenge.ably.dto.user.req.PhoneAuthReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
+import com.challenge.ably.service.AuthService;
 import com.challenge.ably.service.UserService;
 
 import javax.validation.Valid;
 
+import com.challenge.ably.util.ApiExceptionCode;
+import com.challenge.ably.util.AuthTypeCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     /**
      * 회원가입
@@ -26,9 +30,15 @@ public class UserController {
      * @return 회원가입 완료 여부
      */
     @PostMapping("/api/user")
-    public CommonRespDto createUser(@RequestBody @Valid UserCreateReqDto reqDto) {
+    public CommonRespDto createUser(@RequestBody @Valid UserCreateReqDto reqDto) throws Exception {
         // 회원가입 입력 데이터 유효성 검사
         userService.validateCreateUser(reqDto);
+
+        // 휴대폰 인증 여부 확인
+        boolean isAuthorized = authService.isAuthorized(reqDto.getPhone(), reqDto.getTelecomCode(), AuthTypeCode.SIGN_IN, reqDto.getAuthentication());
+        if (!isAuthorized) {
+            throw new CommonException(ApiExceptionCode.NOT_AUTHORIZED_PHONE_ERROR);
+        }
 
         // 회원 생성
         userService.createUser(reqDto);
@@ -46,7 +56,6 @@ public class UserController {
     public CommonRespDto checkLoginIdDuplicate(@RequestParam @Valid CheckLoginIdReqDto reqDto) {
         return new CommonRespDto(userService.checkLoginIdDuplicate(reqDto.getLoginId()));
     }
-
 
 
 }

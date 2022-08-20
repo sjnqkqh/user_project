@@ -22,9 +22,12 @@ CREATE TABLE TB_PHONE_AUTH(
     enc_phone VARCHAR(50) NOT NULL,
     telecom_code ENUM('SKT','KT','LGU','SAVE_SKT','SAVE_KT','SAVE_LGU'),
     auth_value VARCHAR(20) NOT NULL,
+    authentication VARCHAR(200) NULL,
     auth_type ENUM('SIGN_IN', 'PASSWORD_RESET'),
     auth_until DATETIME NOT NULL DEFAULT SYSTIMESTAMP,
     created_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP,
     updated_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP
 );
 
+CREATE INDEX PHONE_INFO_IDX ON TB_PHONE_AUTH(enc_phone, telecom_code, auth_type);
+CREATE INDEX AUTHENTICATION_IDX ON TB_PHONE_AUTH(auth_type, authentication);

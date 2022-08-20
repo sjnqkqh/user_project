@@ -2,6 +2,7 @@ package com.challenge.ably.domain;
 
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.util.YnCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,12 +43,12 @@ public class User extends CommonBaseDateTime {
     private YnCode deleteYn;
 
 
-    public User(UserCreateReqDto reqDto) {
+    public User(UserCreateReqDto reqDto, String encryptedPhone, String hashedPassword) {
         this.loginId = reqDto.getLoginId();
-        this.encryptedPassword = reqDto.getOriginPassword(); // FIXME Password hash
-        this.email = reqDto.getEmail(); // FIXME Email Encrypt
+        this.encryptedPassword = hashedPassword;
+        this.email = reqDto.getEmail();
         this.nickname = reqDto.getNickname();
-        this.encryptedPhone = reqDto.getPhone(); // FIXME Phone Encrypt
+        this.encryptedPhone = encryptedPhone;
         this.deleteYn = YnCode.Y;
     }
 

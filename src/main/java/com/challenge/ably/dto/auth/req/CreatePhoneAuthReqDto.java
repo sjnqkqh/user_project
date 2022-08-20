@@ -1,4 +1,4 @@
-package com.challenge.ably.dto.user.req;
+package com.challenge.ably.dto.auth.req;
 
 import com.challenge.ably.domain.PhoneAuth;
 import com.challenge.ably.util.AuthTypeCode;
@@ -6,7 +6,7 @@ import com.challenge.ably.util.TelecomCode;
 import lombok.Getter;
 
 @Getter
-public class PhoneAuthReqDto {
+public class CreatePhoneAuthReqDto {
 
     private TelecomCode telecomCode;
 
