@@ -38,7 +38,7 @@ public class UserService {
         }
 
         // 비밀번호 유효성 검사
-        if (!RegexUtil.checkPasswordPattern(reqDto.getLoginId())) {
+        if (!RegexUtil.checkPasswordPattern(reqDto.getOriginPassword())) {
             throw new CommonException("Password validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 

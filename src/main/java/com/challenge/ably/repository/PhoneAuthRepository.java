@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PhoneAuthRepository extends JpaRepository<PhoneAuth, Long> {
 
-    Optional<PhoneAuth> findFirstByAuthTypeCodeAndEncPhoneAndTelecomCode(AuthTypeCode authTypeCode, String encPhone, TelecomCode telecomCode);
+    Optional<PhoneAuth> findFirstByAuthTypeCodeAndEncPhoneAndTelecomCodeOrderByUpdatedAtDesc(AuthTypeCode authTypeCode, String encPhone, TelecomCode telecomCode);
 
     Optional<PhoneAuth> findFirstByAuthenticationAndAuthTypeCode(String authentication, AuthTypeCode authTypeCode);
 }

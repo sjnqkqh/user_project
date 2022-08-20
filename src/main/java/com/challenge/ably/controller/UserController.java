@@ -1,6 +1,5 @@
 package com.challenge.ably.controller;
 
-import com.challenge.ably.config.CommonException;
 import com.challenge.ably.dto.CommonRespDto;
 import com.challenge.ably.dto.user.req.CheckLoginIdReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
@@ -9,7 +8,6 @@ import com.challenge.ably.service.UserService;
 
 import javax.validation.Valid;
 
-import com.challenge.ably.util.ApiExceptionCode;
 import com.challenge.ably.util.AuthTypeCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +33,13 @@ public class UserController {
         userService.validateCreateUser(reqDto);
 
         // 휴대폰 인증 여부 확인
-        boolean isAuthorized = authService.isAuthorized(reqDto.getPhone(), reqDto.getTelecomCode(), AuthTypeCode.SIGN_IN, reqDto.getAuthentication());
-        if (!isAuthorized) {
-            throw new CommonException(ApiExceptionCode.NOT_AUTHORIZED_PHONE_ERROR);
-        }
+        Long authId = authService.validatePhoneAuth(reqDto.getPhone(), reqDto.getTelecomCode(), AuthTypeCode.SIGN_IN, reqDto.getAuthentication());
 
         // 회원 생성
         userService.createUser(reqDto);
+
+        // 휴대폰 인증 데이터 제거
+        authService.deletePhoneAuthHistory(authId);
 
         return new CommonRespDto(true);
     }
@@ -56,6 +54,5 @@ public class UserController {
     public CommonRespDto checkLoginIdDuplicate(@RequestParam @Valid CheckLoginIdReqDto reqDto) {
         return new CommonRespDto(userService.checkLoginIdDuplicate(reqDto.getLoginId()));
     }
-
 
 }

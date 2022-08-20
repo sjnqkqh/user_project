@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 @Slf4j
 public class RegexUtil {
 
-    private static final String loginIdPattern = "/^[a-zA-Z]\\w{2,7}$/u";
-    private static final String passwordPattern = "/w{6,20}$/u";
-    private static final String phoneNumberPattern = "/^(010|011|016|017|018|019)-\\d{3,4}-\\d{4}$/u";
+    private static final String loginIdPattern = "^[a-zA-Z0-9]{6,12}$";
+    private static final String passwordPattern = "^[A-Za-z0-9]{6,12}$";
+    private static final String phoneNumberPattern = "^01([0-9])([0-9]{3,4})([0-9]{4})$";
 
     /**
      * 로그인 아이디 패턴 확인
