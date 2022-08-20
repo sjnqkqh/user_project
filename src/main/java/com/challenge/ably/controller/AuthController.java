@@ -31,12 +31,12 @@ public class AuthController {
     }
 
     /**
-     * 휴대전화 인증 생성
+     * 휴대전화 인증 확인
      *
      * @param reqDto 휴대전화 정보
      * @return 휴대전화 인증 정보
      */
-    @GetMapping("/api/auth/phone")
+    @PatchMapping("/api/auth/phone")
     public CheckPhoneAuthRespDto phoneAuthentication(@RequestBody @Valid CheckPhoneAuthReqDto reqDto) throws Exception {
         return authService.phoneAuthentication(reqDto);
     }
