@@ -20,7 +20,7 @@ public class UserCreateReqDto {
     private String email;
 
     @NotBlank
-    private String originPassword;
+    private String password;
 
     @NotBlank
     @Size(min = 1, max = 20)

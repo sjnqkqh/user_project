@@ -2,16 +2,24 @@ package com.challenge.ably.controller;
 
 import com.challenge.ably.dto.CommonRespDto;
 import com.challenge.ably.dto.user.req.CheckLoginIdReqDto;
+import com.challenge.ably.dto.user.req.LoginReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
+import com.challenge.ably.dto.user.resp.LoginRespDto;
+import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.service.AuthService;
 import com.challenge.ably.service.UserService;
-
-import javax.validation.Valid;
-
 import com.challenge.ably.util.AuthTypeCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -54,5 +62,39 @@ public class UserController {
     public CommonRespDto checkLoginIdDuplicate(@RequestParam @Valid CheckLoginIdReqDto reqDto) {
         return new CommonRespDto(userService.checkLoginIdDuplicate(reqDto.getLoginId()));
     }
+
+    /**
+     * 로그인
+     *
+     * @param reqDto 로그인 정보
+     * @return 로그인 결과과
+     */
+    @PostMapping("/api/user/login")
+    public LoginRespDto login(@RequestBody @Valid LoginReqDto reqDto) throws Exception {
+        Long userId = userService.login(reqDto);
+
+        return new LoginRespDto(userService.giveLoginAuthToken(userId));
+    }
+
+    /**
+     * 회원 정보 조회
+     *
+     * @return 회원 정보
+     */
+    @GetMapping("/api/user/info")
+    public UserInfoRespDto searchUserInformation(@RequestAttribute(name = "id") Long userId) throws Exception {
+        return userService.searchUserInfo(userId);
+    }
+
+    /**
+     * 비밀번호 변경
+     *
+     * @return
+     */
+    @GetMapping("/api/user/info")
+    public UserInfoRespDto resetPassword(@RequestAttribute(name = "id") Long userId) throws Exception {
+        return userService.searchUserInfo(userId);
+    }
+
 
 }

@@ -2,11 +2,16 @@ package com.challenge.ably.domain;
 
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.util.YnCode;
-import lombok.Builder;
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 
 @Entity
@@ -35,8 +40,11 @@ public class User extends CommonBaseDateTime {
     @Column(name = "enc_phone")
     private String encryptedPhone;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
+    @Column(name = "access_expired_at")
+    private LocalDateTime accessExpiredAt;
+
+    @Column(name = "access_token")
+    private String accessToken;
 
     @Column(name = "delete_yn")
     @Enumerated(EnumType.STRING)
@@ -49,7 +57,12 @@ public class User extends CommonBaseDateTime {
         this.email = reqDto.getEmail();
         this.nickname = reqDto.getNickname();
         this.encryptedPhone = encryptedPhone;
-        this.deleteYn = YnCode.Y;
+        this.deleteYn = YnCode.N;
+    }
+
+    public void setAccessToken(String accessToken, LocalDateTime expiredAt) {
+        this.accessToken = accessToken;
+        this.accessExpiredAt = expiredAt;
     }
 
 }
