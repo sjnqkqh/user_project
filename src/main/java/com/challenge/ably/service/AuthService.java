@@ -98,20 +98,20 @@ public class AuthService {
         // 인증번호가 틀린 경우
         if (authOptional.isEmpty()) {
             log.info("[AuthService.validatePhoneAuth] No authentication information");
-            throw new CommonException(ApiExceptionCode.NOT_AUTHORIZED_PHONE_ERROR);
+            throw new CommonException(ApiExceptionCode.NOT_AUTHENTICATED_PHONE_ERROR);
         }
 
         // 인증번호에 해당하는 인증 요청은 있으나, 정보가 일치하지 않거나 인증되지 않은 경우
         PhoneAuth auth = authOptional.get();
         if (!EncryptUtil.match(auth.getEncPhone(), phone) || auth.getTelecomCode() != telecomCode || auth.getAuthorizedYn() == YnCode.N) {
             log.info("[AuthService.validatePhoneAuth] Wrong phone information");
-            throw new CommonException(ApiExceptionCode.NOT_AUTHORIZED_PHONE_ERROR);
+            throw new CommonException(ApiExceptionCode.NOT_AUTHENTICATED_PHONE_ERROR);
         }
 
         // 휴대전화 인증 유효 시간을 초과한 경우
         if (LocalDateTime.now().isAfter(auth.getGuaranteeUntil())) {
             log.info("[AuthService.validatePhoneAuth] Guarantee time is overed. authentication:" + authentication);
-            throw new CommonException(ApiExceptionCode.AUTH_GUARANTEE_TIME_OVER_ERROR);
+            throw new CommonException(ApiExceptionCode.AUTHENTICATION_GUARANTEE_TIME_OVER_ERROR);
         }
 
         return auth.getPhoneAuthId();

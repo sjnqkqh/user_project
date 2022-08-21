@@ -10,10 +10,15 @@ public enum ApiExceptionCode {
     TOKEN_EXPIRED_EXCEPTION(HttpStatus.FORBIDDEN, "E0002", "Token Expired"),
     NO_HANDLER_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "E0003", "Page not found"),
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "E0004", "Method argument validation fail"),
+    HEADER_FIELD_EXCEPTION(HttpStatus.BAD_REQUEST, "E0005", "Header setting error"),
+    TOKEN_NOT_EXIST_ERROR(HttpStatus.BAD_REQUEST, "E0006", "Access Token does not exist."),
 
-    PHONE_AUTHORIZE_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0100", "Fail to phone authorize"),
-    NOT_AUTHORIZED_PHONE_ERROR(HttpStatus.BAD_REQUEST, "E0101", "It's not authorized phone information"),
-    AUTH_GUARANTEE_TIME_OVER_ERROR(HttpStatus.BAD_REQUEST, "E0102", "Guarantee time is overed"),
+
+    PHONE_AUTHENTICATE_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0100", "Fail to phone authenticate"),
+    NOT_AUTHENTICATED_PHONE_ERROR(HttpStatus.BAD_REQUEST, "E0101", "It's not authenticated phone information"),
+    AUTHENTICATION_GUARANTEE_TIME_OVER_ERROR(HttpStatus.BAD_REQUEST, "E0102", "Guarantee time is overed"),
+
+    LOGIN_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0200", "Invalid user login information"),
 
     INTERNAL_SERVER_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "E9999", "Unknown error");
 

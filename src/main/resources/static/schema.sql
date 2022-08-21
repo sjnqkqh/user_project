@@ -9,13 +9,15 @@ CREATE TABLE TB_USER(
     enc_password VARCHAR(100) NOT NULL,
     nickname VARCHAR(40) NOT NULL,
     enc_phone VARCHAR(50) NOT NULL,
-    refresh_token VARCHAR(100) NULL,
+    access_token VARCHAR(300) NULL,
+    access_expired_at DATETIME NULL ,
     delete_yn VARCHAR(1) NOT NULL DEFAULT 'N',
     created_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP,
     updated_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP
 );
 
 CREATE INDEX email_idx ON TB_USER(login_id);
+CREATE INDEX access_token_idx ON TB_USER(access_token);
 
 CREATE TABLE TB_PHONE_AUTH(
     auth_id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
