@@ -21,9 +21,7 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -48,6 +46,14 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 }
 
+/* Spring Rest Docs 관련 */
+
+
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
 tasks.named('test') {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
@@ -56,4 +62,23 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+
+bootJar.doFirst {
+	// 생성된 문서를 src/main/resources/templates/ 에 복사
+	copy {
+		from "${asciidoctor.outputDir}"
+		into "src/main/resources/templates/"
+	}
+	// Build 시 사용할 문서를 저장
+	copy {
+		from "${asciidoctor.outputDir}"
+		into "build/resources/main/templates/"
+	}
+}
+
+bootJar {
+	// 빌드 전 문서 생성 확인
+	dependsOn asciidoctor
 }

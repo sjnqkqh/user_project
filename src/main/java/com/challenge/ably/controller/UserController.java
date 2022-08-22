@@ -81,7 +81,7 @@ public class UserController {
      *
      * @return 회원 정보
      */
-    @GetMapping("/api/user/info")
+    @GetMapping("/api/user")
     public UserInfoRespDto searchUserInformation(@RequestAttribute(name = "id") Long userId) throws Exception {
         return userService.searchUserInfo(userId);
     }

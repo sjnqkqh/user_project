@@ -2,9 +2,13 @@ package com.challenge.ably.dto.user.resp;
 
 import com.challenge.ably.domain.User;
 import com.challenge.ably.util.EncryptUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserInfoRespDto {
 
     private String loginId;

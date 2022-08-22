@@ -93,7 +93,7 @@ public class PhoneAuth extends CommonBaseDateTime {
         this.telecomCode = reqDto.getTelecomCode();
         this.authValue = authValue;
         this.encPhone = encPhone;
-        this.authTypeCode = reqDto.getAuthTypeCode();
+        this.authTypeCode = AuthTypeCode.SIGN_IN;
         this.authorizedYn = YnCode.N;
         this.authUntil = LocalDateTime.now().plusMinutes(3);
     }
@@ -110,7 +110,7 @@ public class PhoneAuth extends CommonBaseDateTime {
         this.telecomCode = reqDto.getTelecomCode();
         this.authValue = authValue;
         this.encPhone = encPhone;
-        this.authTypeCode = reqDto.getAuthTypeCode();
+        this.authTypeCode = AuthTypeCode.PASSWORD_RESET;
         this.authorizedYn = YnCode.N;
         this.authUntil = LocalDateTime.now().plusMinutes(3);
     }
