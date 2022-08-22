@@ -2,12 +2,15 @@ package com.challenge.ably.dto.auth.req;
 
 import com.challenge.ably.util.AuthTypeCode;
 import com.challenge.ably.util.TelecomCode;
-import lombok.Getter;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CheckPhoneAuthReqDto {
 
     @NotNull

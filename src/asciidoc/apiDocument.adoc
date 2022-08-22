@@ -1,0 +1,182 @@
+:snippets: build/generated-snippets
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+
+= Hiring REST API Document
+{docdatetime}
+
+== 인증 관련
+
+=== 휴대전화 인증 [회원가입]
+
+회원가입 휴대전화 인증 요청 API
+
+Information::
+- Method : `POST`
+- URL : `/api/auth/phone/sign-in`
+- Request Type : `application/json`
+
+Request Body::
+include::{snippets}/testPhoneAuthenticationSignIn/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/testPhoneAuthenticationSignIn/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/testPhoneAuthenticationSignIn/http-request.adoc[]
+
+Response Example::
+include::{snippets}/testPhoneAuthenticationSignIn/http-response.adoc[]
+
+=== 휴대전화 인증 [비밀번호 찾기]
+
+비밀번호 휴대전화 인증 요청 API (ID, Email, 휴대전화 번호로 회원 조회)
+
+Information::
+- Method : `POST`
+- URL : `/api/auth/phone/password-reset`
+- Request Type : `application/json`
+
+Request Body::
+include::{snippets}/testPhoneAuthenticationPasswordReset/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/testPhoneAuthenticationPasswordReset/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/testPhoneAuthenticationPasswordReset/http-request.adoc[]
+
+Response Example::
+include::{snippets}/testPhoneAuthenticationPasswordReset/http-response.adoc[]
+
+=== 휴대전화 인증
+
+휴대전화 인증 확인 API
+(해당 프로젝트에선 입력한 휴대전화 번호 뒷자리 6자로 인증합니다.)
+
+Information::
+- Method : `PATCH`
+- URL : `/api/auth/phone/password-reset`
+- Request Type : `application/json`
+
+Request Body::
+include::{snippets}/testCheckPhoneAuthentication/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/testCheckPhoneAuthentication/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/testCheckPhoneAuthentication/http-request.adoc[]
+
+Response Example::
+include::{snippets}/testCheckPhoneAuthentication/http-response.adoc[]
+
+== 회원 관련 API
+
+=== 회원 생성
+
+고객이 입력한 정보를 가지고 회원 정보 생성을 하는 API
+
+Information::
+- Method : `POST`
+- URL : `/api/user`
+- Request Type : `application/json`
+
+
+Request Body::
+include::{snippets}/signInTest/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/signInTest/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/signInTest/http-request.adoc[]
+
+Response Example::
+include::{snippets}/signInTest/http-response.adoc[]
+
+Error Code::
+
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E0118|비밀번호에 사용이 불가능한 문자가 포함되거나, 길이 제약을 벗어나는 경우
+|400|E0123|2주 내에 탈퇴한 회원과 동일한 휴대전화 번호를 입력한 경우
+|400|E0124|2주 내에 탈퇴한 회원과 동일한 이메일 주소를 입력한 경우
+|400|E0128|로그인 ID가 정의된 패턴에 어긋나는 경우
+|400|E0129|닉네임 형식이 정의된 패턴에 어긋나는 경우
+|400|E0130|비밀번호에 대문자와 특수문자가 각 1자 이상 포함되지 않은 경우
+|400|E0131|이메일 형식이 정의된 패턴에 어긋나는 경우
+|400|E0900|닉네임에 금지어가 포함되어 있을 경우
+|===
+
+=== 로그인
+
+로그인 API
+
+Information::
+- Method : `POST`
+- URL : `/api/user/login`
+- Request Type : `application/json`
+
+
+Request Body::
+include::{snippets}/loginInTest/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/loginInTest/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/loginInTest/http-request.adoc[]
+
+Response Example::
+include::{snippets}/loginInTest/http-response.adoc[]
+
+
+=== 회원 정보 확인
+
+회원 정보 확인 API (Header에 Access Token 필요)
+
+Information::
+- Method : `GET`
+- URL : `/api/user`
+- Request Type : `application/json`
+
+Request Header::
+include::{snippets}/getUserInformationTest/request-headers.adoc[]
+
+Response Body::
+include::{snippets}/getUserInformationTest/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/getUserInformationTest/http-request.adoc[]
+
+Response Example::
+include::{snippets}/getUserInformationTest/http-response.adoc[]
+
+=== 비밀번호 찾기
+
+미로그인 회원의 비밀번호를 변경하는 API
+
+Information::
+- Method : `PATCH`
+- URL : `/api/user/password`
+- Request Type : `application/json`
+
+
+Request Body::
+include::{snippets}/resetPasswordTest/request-fields.adoc[]
+
+Response Body::
+include::{snippets}/resetPasswordTest/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/resetPasswordTest/http-request.adoc[]
+
+Response Example::
+include::{snippets}/resetPasswordTest/http-response.adoc[]
