@@ -17,6 +17,8 @@ public enum ApiExceptionCode {
     PHONE_AUTHENTICATE_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0100", "Fail to phone authenticate"),
     NOT_AUTHENTICATED_PHONE_ERROR(HttpStatus.BAD_REQUEST, "E0101", "It's not authenticated phone information"),
     AUTHENTICATION_GUARANTEE_TIME_OVER_ERROR(HttpStatus.BAD_REQUEST, "E0102", "Guarantee time is overed"),
+    NOT_EXIST_USER_INFORMATION_ERROR(HttpStatus.BAD_REQUEST, "E0103", "No user information"),
+    PHONE_NUMBER_IS_NOT_MATCHED_ERROR(HttpStatus.BAD_REQUEST, "E0104", "The member's phone number and the phone number you entered do not match"),
 
     LOGIN_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0200", "Invalid user login information"),
 

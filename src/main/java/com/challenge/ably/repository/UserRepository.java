@@ -11,8 +11,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByLoginIdAndDeleteYn(String loginId, YnCode deleteYn);
 
-    Optional<User> findFirstByLoginIdAndDeleteYnOrderByCreatedAtDesc(String loginId, YnCode ynCode);
-    Optional<User> findFirstByAccessTokenAndDeleteYnOrderByCreatedAtDesc(String accessToken, YnCode ynCode);
+    Optional<User> findFirstByLoginIdAndEmailAndDeleteYnOrderByCreatedAtDesc(String loginId, String email, YnCode deleteYn);
+
+    Optional<User> findFirstByLoginIdAndDeleteYnOrderByCreatedAtDesc(String loginId, YnCode deleteYn);
+
+    Optional<User> findFirstByAccessTokenAndDeleteYnOrderByCreatedAtDesc(String accessToken, YnCode deleteYn);
+
 
 
 }

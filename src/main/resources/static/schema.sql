@@ -21,6 +21,7 @@ CREATE INDEX access_token_idx ON TB_USER(access_token);
 
 CREATE TABLE TB_PHONE_AUTH(
     auth_id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NULL,
     enc_phone VARCHAR(50) NOT NULL,
     telecom_code ENUM('SKT','KT','LGU','SAVE_SKT','SAVE_KT','SAVE_LGU'),
     auth_value VARCHAR(20) NOT NULL,
@@ -30,7 +31,8 @@ CREATE TABLE TB_PHONE_AUTH(
     auth_until DATETIME NOT NULL DEFAULT SYSTIMESTAMP,
     guarantee_until DATETIME NULL,
     created_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP,
-    updated_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP
+    updated_at DATETIME NOT NULL  DEFAULT SYSTIMESTAMP,
+    CONSTRAINT PHONE_AUTH_REFERENCE FOREIGN KEY (user_id) references (user_id)
 );
 
 CREATE INDEX PHONE_INFO_IDX ON TB_PHONE_AUTH(enc_phone, telecom_code, auth_type);

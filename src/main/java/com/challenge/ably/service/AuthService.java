@@ -2,19 +2,26 @@ package com.challenge.ably.service;
 
 import com.challenge.ably.config.CommonException;
 import com.challenge.ably.domain.PhoneAuth;
+import com.challenge.ably.domain.User;
 import com.challenge.ably.dto.auth.req.CheckPhoneAuthReqDto;
-import com.challenge.ably.dto.auth.req.CreatePhoneAuthReqDto;
+import com.challenge.ably.dto.auth.req.PasswordResetPhoneAuthReqDto;
+import com.challenge.ably.dto.auth.req.SignInPhoneAuthReqDto;
 import com.challenge.ably.dto.auth.resp.CheckPhoneAuthRespDto;
 import com.challenge.ably.repository.PhoneAuthRepository;
-import com.challenge.ably.util.*;
+import com.challenge.ably.util.ApiExceptionCode;
+import com.challenge.ably.util.AuthTypeCode;
+import com.challenge.ably.util.EncryptUtil;
+import com.challenge.ably.util.RegexUtil;
+import com.challenge.ably.util.StringUtil;
+import com.challenge.ably.util.TelecomCode;
+import com.challenge.ably.util.YnCode;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,12 +32,12 @@ public class AuthService {
 
 
     /**
-     * 휴대전화 인증 생성
+     * 회원가입 - 휴대전화 인증 생성
      *
      * @param reqDto 휴대전화 정보
      */
     @Transactional
-    public void createPhoneAuthentication(CreatePhoneAuthReqDto reqDto) throws Exception {
+    public void signInPhoneAuthentication(SignInPhoneAuthReqDto reqDto) throws Exception {
         // 입력한 휴대전화 번호 유효성 검사
         if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhoneNumber())) {
             log.info("[AuthService.createPhoneAuthentication] phone:" + reqDto.getPhoneNumber());
@@ -52,6 +59,42 @@ public class AuthService {
         String authValue = StringUtil.getAuthValue(reqDto.getPhoneNumber());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
         String encPhone = EncryptUtil.encryptAES256(reqDto.getPhoneNumber()); // 휴대전화 번호 암호화
         phoneAuthRepository.save(new PhoneAuth(reqDto, authValue, encPhone)); // 인증 정보 생성
+    }
+
+    /**
+     * 비밀번호 변경 - 휴대전화 인증 생성
+     *
+     * @param reqDto 휴대전화 정보
+     */
+    @Transactional
+    public void passwordResetPhoneAuthentication(PasswordResetPhoneAuthReqDto reqDto, User user) throws Exception {
+        // 입력한 휴대전화 번호 유효성 검사
+        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhoneNumber())) {
+            log.info("[AuthService.createPhoneAuthentication] phone number validation fail. phone:" + reqDto.getPhoneNumber());
+            throw new CommonException("Phone Number validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
+        }
+
+        // 입력한 휴대전화 번호와 기존 회원의 휴대전화 번호가 일치하는지 확인
+        if (!EncryptUtil.match(user.getEncryptedPhone(), reqDto.getPhoneNumber())) {
+            log.info("[AuthService.createPhoneAuthentication] phone number is not matched. phone:" + reqDto.getPhoneNumber());
+            throw new CommonException(ApiExceptionCode.PHONE_NUMBER_IS_NOT_MATCHED_ERROR);
+        }
+
+        // 입력한 휴대 전화 정보로 기존 내역 조회
+        Optional<PhoneAuth> phoneAuthOptional = phoneAuthRepository.findFirstByAuthTypeCodeAndEncPhoneAndTelecomCodeOrderByUpdatedAtDesc(
+            reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhoneNumber()), reqDto.getTelecomCode()
+        );
+
+        // 동일한 휴대전화 정보로 인증을 신청한 내역이 있다면, 유효 시간 갱신
+        if (phoneAuthOptional.isPresent()) {
+            phoneAuthOptional.get().refreshAuthUtil();
+            return;
+        }
+
+        // 휴대전화 인증 요청 정보 저장
+        String authValue = StringUtil.getAuthValue(reqDto.getPhoneNumber());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
+        String encPhone = EncryptUtil.encryptAES256(reqDto.getPhoneNumber()); // 휴대전화 번호 암호화
+        phoneAuthRepository.save(new PhoneAuth(reqDto, user, authValue, encPhone)); // 인증 정보 생성
     }
 
     /**
@@ -91,6 +134,7 @@ public class AuthService {
     /**
      * 휴대전화 인증 성공 여부 조회
      */
+    @Transactional(readOnly = true)
     public Long validatePhoneAuth(String phone, TelecomCode telecomCode, AuthTypeCode authTypeCode,
         String authentication) throws Exception {
         Optional<PhoneAuth> authOptional = phoneAuthRepository.findFirstByAuthenticationAndAuthTypeCode(authentication, authTypeCode);
@@ -120,7 +164,8 @@ public class AuthService {
     /**
      * 휴대전화 인증 정보 제거
      */
-    public void deletePhoneAuthHistory(Long authId){
+    @Transactional
+    public void deletePhoneAuthHistory(Long authId) {
         phoneAuthRepository.findById(authId).ifPresent(phoneAuthRepository::delete);
     }
 }

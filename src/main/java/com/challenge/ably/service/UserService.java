@@ -3,6 +3,7 @@ package com.challenge.ably.service;
 import com.challenge.ably.config.CommonException;
 import com.challenge.ably.domain.User;
 import com.challenge.ably.dto.user.req.LoginReqDto;
+import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.repository.UserRepository;
@@ -69,19 +70,35 @@ public class UserService {
      * @param id 유저 ID
      * @return 회원 객체
      */
+    @Transactional(readOnly = true)
     public User searchUser(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new CommonException("User ID does not exist", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION));
     }
 
     /**
-     * 회원 ID로 회원 정보 조회
+     * 회원 ID로 회원 정보 조회 (UserInfoDto 반환)
      *
      * @param id 유저 ID
      * @return 회원 객체
      */
+    @Transactional(readOnly = true)
     public UserInfoRespDto searchUserInfo(Long id) throws Exception {
         return new UserInfoRespDto(searchUser(id));
+    }
+
+    /**
+     * 로그인 ID와 이메일로 회원정보 조회 (비밀번호 조회 시, 사용)
+     *
+     * @param loginId 로그인 ID
+     * @param email 이메일
+     * @return 회원정보
+     */
+    @Transactional(readOnly = true)
+    public User searchUserByLoginIdAndEmail(String loginId, String email) {
+        return userRepository.findFirstByLoginIdAndEmailAndDeleteYnOrderByCreatedAtDesc(loginId, email, YnCode.N).orElseThrow(
+            ()-> new CommonException(ApiExceptionCode.NOT_EXIST_USER_INFORMATION_ERROR)
+        );
     }
 
     /**
@@ -146,5 +163,16 @@ public class UserService {
         searchUser(userId).setAccessToken(accessToken, expiredLocal); // 회원 정보에 토큰 정보 삽입
 
         return accessToken;
+    }
+
+    /**
+     * 비밀번호 변경
+     *
+     * @param reqDto 휴대전화 인증 및 아이디, 이메일, 신규 비밀번호 정보
+     */
+    @Transactional
+    public void resetPassword(PasswordResetReqDto reqDto)  {
+        User user = searchUserByLoginIdAndEmail(reqDto.getLoginId(), reqDto.getEmail());
+        user.updatePassword(BcryptUtil.bcryptEncode(reqDto.getPassword()));
     }
 }
