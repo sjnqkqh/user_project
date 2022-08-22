@@ -224,10 +224,11 @@ include::{snippets}/resetPasswordTest/http-response.adoc[]
 [cols="1, 2, 7",options=header]
 |===
 |Status|Error Code|Desc
-|400|E0001|프로그램 진행 중 전달된 Parameter 원인으로 발생된 에러일 경우 전달
+|400|E0001|프로그램 진행 중 전달된 Parameter 원인으로 발생된 오류일 경우 전달
 |403|E0002|Token expired 시 전달
 |404|E0003|잘못된 URL 호출
-|400|E0004|스프링 @Valid 어노테이션으로 확인된 Parameter 에러
-|400|E0005|필수 헤더 값 셋팅 관련 에러
-|401|E0006|Token expired 를 제외한 Token 관련 에러 발생 시 전달
+|400|E0004|스프링 @Valid 어노테이션으로 확인된 Parameter 오류
+|400|E0005|필수 헤더 값 셋팅 관련 오류
+|401|E0006|Token expired 를 제외한 Token 관련 오류 발생 시 전달
+|400|E9999|비즈니스 로직 내에서 예상하지 못한 오류
 |===
