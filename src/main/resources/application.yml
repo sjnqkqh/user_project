@@ -8,15 +8,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+      use-new-id-generator-mappings: false
     show-sql: true
   h2:
     console:
       enabled: true
 
-  logging:
-    level:
-      org:
-        springframework.web: debug
   sql:
     init:
       schema-locations: classpath*:static/schema.sql
+
+# JWT 관련 설정
+jwt.token:
+  secret-key: PIC584tlILWtwxwTEK0RRogziyJWzGIbDFcaLLKnyC
+  issuer: TEST
+  audience: CUSTOMERS
