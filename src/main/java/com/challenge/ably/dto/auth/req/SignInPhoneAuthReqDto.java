@@ -13,7 +13,7 @@ public class SignInPhoneAuthReqDto {
 
     private TelecomCode telecomCode;
 
-    private String phoneNumber;
+    private String phone;
 
     private AuthTypeCode authTypeCode;
 

@@ -47,9 +47,6 @@ dependencies {
 }
 
 /* Spring Rest Docs 관련 */
-
-
-
 ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
