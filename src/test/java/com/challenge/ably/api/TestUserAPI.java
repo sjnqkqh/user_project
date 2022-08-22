@@ -10,6 +10,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,11 +67,37 @@ public class TestUserAPI {
     private AuthenticationInterceptor authenticationInterceptor;
 
     /**
+     * ID 중복확인 테스트
+     */
+    @Test
+    void isDuplicateIdTest() throws Exception {
+        /* Given */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        /* When */
+        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/user/check-duplicate")
+            .headers(headers)
+            .param("loginId", "Hiring_Test"));
+
+        /* Then */
+        result.andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("isDuplicateIdTest",
+                requestParameters(
+                    parameterWithName("loginId").description("회원 로그인 ID")
+                ),
+                responseFields(
+                    fieldWithPath("isDuplicateId").type(JsonFieldType.BOOLEAN).description("로그인 ID 중복 여부")
+                )
+            ));
+    }
+
+    /**
      * 회원가입 테스트
      */
     @Test
     void signInTest() throws Exception {
-
         /* Given */
         UserCreateReqDto reqDto = new UserCreateReqDto("HIRING_TEST", "test@hiring.co.kr", "password1", "hiring", "01012341234", TelecomCode.LGU, "UUID");
 
@@ -84,6 +112,7 @@ public class TestUserAPI {
             .headers(headers)
             .content(objectMapper.writeValueAsString(reqDto)));
 
+        /* Then */
         result.andExpect(status().isOk())
             .andExpect(jsonPath("result", equalTo(true)))
             .andDo(print())
@@ -108,7 +137,6 @@ public class TestUserAPI {
      */
     @Test
     void loginInTest() throws Exception {
-
         /* Given */
         LoginReqDto reqDto = new LoginReqDto("HIRING_TEST", "password1");
 
@@ -123,6 +151,7 @@ public class TestUserAPI {
             .headers(headers)
             .content(objectMapper.writeValueAsString(reqDto)));
 
+        /* Then */
         result.andExpect(status().isOk())
             .andDo(print())
             .andDo(document("loginInTest",
@@ -150,10 +179,11 @@ public class TestUserAPI {
         willReturn(new UserInfoRespDto("HIRING_TEST", "test@hiring.co.kr", "hiring", "01012341234")).given(userService).searchUserInfo(any());
 
         /* When */
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/user")
+        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/user/info")
             .requestAttr("id", 0L)
             .headers(headers));
 
+        /* Then */
         result.andExpect(status().isOk())
             .andDo(print())
             .andDo(document("getUserInformationTest",
@@ -172,7 +202,6 @@ public class TestUserAPI {
      */
     @Test
     void resetPasswordTest() throws Exception {
-
         /* Given */
         PasswordResetReqDto reqDto = new PasswordResetReqDto("HIRING_TEST", "test@hiring.co.kr", "password1", "01012341234", TelecomCode.LGU, "UUID");
 
@@ -187,6 +216,7 @@ public class TestUserAPI {
             .headers(headers)
             .content(objectMapper.writeValueAsString(reqDto)));
 
+        /* Then */
         result.andExpect(status().isOk())
             .andExpect(jsonPath("result", equalTo(true)))
             .andDo(print())

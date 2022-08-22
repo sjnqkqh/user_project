@@ -39,14 +39,14 @@ public class AuthService {
     @Transactional
     public void signInPhoneAuthentication(SignInPhoneAuthReqDto reqDto) throws Exception {
         // 입력한 휴대전화 번호 유효성 검사
-        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhoneNumber())) {
-            log.info("[AuthService.createPhoneAuthentication] phone:" + reqDto.getPhoneNumber());
+        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhone())) {
+            log.info("[AuthService.createPhoneAuthentication] phone:" + reqDto.getPhone());
             throw new CommonException("Phone Number validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 
         // 입력한 휴대 전화 정보로 기존 내역 조회
         Optional<PhoneAuth> phoneAuthOptional = phoneAuthRepository.findFirstByAuthTypeCodeAndEncPhoneAndTelecomCodeOrderByUpdatedAtDesc(
-            reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhoneNumber()), reqDto.getTelecomCode()
+            reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhone()), reqDto.getTelecomCode()
         );
 
         // 동일한 휴대전화 정보로 인증을 신청한 내역이 있다면, 유효 시간 갱신
@@ -56,8 +56,8 @@ public class AuthService {
         }
 
         // 휴대전화 인증 요청 정보 저장
-        String authValue = StringUtil.getAuthValue(reqDto.getPhoneNumber());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
-        String encPhone = EncryptUtil.encryptAES256(reqDto.getPhoneNumber()); // 휴대전화 번호 암호화
+        String authValue = StringUtil.getAuthValue(reqDto.getPhone());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
+        String encPhone = EncryptUtil.encryptAES256(reqDto.getPhone()); // 휴대전화 번호 암호화
         phoneAuthRepository.save(new PhoneAuth(reqDto, authValue, encPhone)); // 인증 정보 생성
     }
 
@@ -69,20 +69,20 @@ public class AuthService {
     @Transactional
     public void passwordResetPhoneAuthentication(PasswordResetPhoneAuthReqDto reqDto, User user) throws Exception {
         // 입력한 휴대전화 번호 유효성 검사
-        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhoneNumber())) {
-            log.info("[AuthService.createPhoneAuthentication] phone number validation fail. phone:" + reqDto.getPhoneNumber());
+        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhone())) {
+            log.info("[AuthService.createPhoneAuthentication] phone number validation fail. phone:" + reqDto.getPhone());
             throw new CommonException("Phone Number validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 
         // 입력한 휴대전화 번호와 기존 회원의 휴대전화 번호가 일치하는지 확인
-        if (!EncryptUtil.match(user.getEncryptedPhone(), reqDto.getPhoneNumber())) {
-            log.info("[AuthService.createPhoneAuthentication] phone number is not matched. phone:" + reqDto.getPhoneNumber());
+        if (!EncryptUtil.match(user.getEncryptedPhone(), reqDto.getPhone())) {
+            log.info("[AuthService.createPhoneAuthentication] phone number is not matched. phone:" + reqDto.getPhone());
             throw new CommonException(ApiExceptionCode.PHONE_NUMBER_IS_NOT_MATCHED_ERROR);
         }
 
         // 입력한 휴대 전화 정보로 기존 내역 조회
         Optional<PhoneAuth> phoneAuthOptional = phoneAuthRepository.findFirstByAuthTypeCodeAndEncPhoneAndTelecomCodeOrderByUpdatedAtDesc(
-            reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhoneNumber()), reqDto.getTelecomCode()
+            reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhone()), reqDto.getTelecomCode()
         );
 
         // 동일한 휴대전화 정보로 인증을 신청한 내역이 있다면, 유효 시간 갱신
@@ -92,8 +92,8 @@ public class AuthService {
         }
 
         // 휴대전화 인증 요청 정보 저장
-        String authValue = StringUtil.getAuthValue(reqDto.getPhoneNumber());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
-        String encPhone = EncryptUtil.encryptAES256(reqDto.getPhoneNumber()); // 휴대전화 번호 암호화
+        String authValue = StringUtil.getAuthValue(reqDto.getPhone());  // 인증 번호는 회원이 입력한 핸드폰 번호 뒷자리 6자리
+        String encPhone = EncryptUtil.encryptAES256(reqDto.getPhone()); // 휴대전화 번호 암호화
         phoneAuthRepository.save(new PhoneAuth(reqDto, user, authValue, encPhone)); // 인증 정보 생성
     }
 
@@ -105,13 +105,13 @@ public class AuthService {
     @Transactional
     public CheckPhoneAuthRespDto phoneAuthentication(CheckPhoneAuthReqDto reqDto) throws Exception {
         // 입력한 휴대전화 번호 유효성 검사
-        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhoneNumber())) {
+        if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhone())) {
             throw new CommonException("Phone Number validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 
         // 입력한 휴대 전화 정보로 기존 내역 조회
         Optional<PhoneAuth> phoneAuthOptional = phoneAuthRepository.findFirstByAuthTypeCodeAndEncPhoneAndTelecomCodeOrderByUpdatedAtDesc
-            (reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhoneNumber()), reqDto.getTelecomCode());
+            (reqDto.getAuthTypeCode(), EncryptUtil.encryptAES256(reqDto.getPhone()), reqDto.getTelecomCode());
 
         // 인증 번호가 다르거나, 인증 가능 기간이 지난 경우
         if (phoneAuthOptional.isEmpty() || !StringUtils.equals(phoneAuthOptional.get().getAuthValue(), reqDto.getAuthValue())

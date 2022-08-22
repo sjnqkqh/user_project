@@ -1,10 +1,10 @@
 package com.challenge.ably.controller;
 
 import com.challenge.ably.dto.CommonRespDto;
-import com.challenge.ably.dto.user.req.CheckLoginIdReqDto;
 import com.challenge.ably.dto.user.req.LoginReqDto;
 import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
+import com.challenge.ably.dto.user.resp.LoginIdAvailableRespDto;
 import com.challenge.ably.dto.user.resp.LoginRespDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.service.AuthService;
@@ -55,12 +55,12 @@ public class UserController {
     /**
      * 로그인 ID 중복 검사
      *
-     * @param reqDto 로그인 ID
+     * @param loginId 로그인 ID
      * @return 로그인 ID 사용 가능 여부
      */
     @GetMapping("/api/user/check-duplicate")
-    public CommonRespDto checkLoginIdDuplicate(@RequestParam @Valid CheckLoginIdReqDto reqDto) {
-        return new CommonRespDto(userService.checkLoginIdDuplicate(reqDto.getLoginId()));
+    public LoginIdAvailableRespDto checkLoginIdDuplicate(@RequestParam(name = "loginId") @Valid String loginId) {
+        return new LoginIdAvailableRespDto(userService.isDuplicateLoginId(loginId));
     }
 
     /**
@@ -81,7 +81,7 @@ public class UserController {
      *
      * @return 회원 정보
      */
-    @GetMapping("/api/user")
+    @GetMapping("/api/user/info")
     public UserInfoRespDto searchUserInformation(@RequestAttribute(name = "id") Long userId) throws Exception {
         return userService.searchUserInfo(userId);
     }

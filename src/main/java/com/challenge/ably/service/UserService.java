@@ -41,7 +41,7 @@ public class UserService {
             throw new CommonException("Login ID validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 
-        if (checkLoginIdDuplicate(reqDto.getLoginId())) {
+        if (isDuplicateLoginId(reqDto.getLoginId())) {
             throw new CommonException("Login ID duplicate.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
 
@@ -60,7 +60,7 @@ public class UserService {
      * 로그인 ID 중복 검사
      */
     @Transactional(readOnly = true)
-    public boolean checkLoginIdDuplicate(String loginId) {
+    public boolean isDuplicateLoginId(String loginId) {
         return userRepository.existsByLoginIdAndDeleteYn(loginId, YnCode.Y);
     }
 

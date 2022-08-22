@@ -61,7 +61,7 @@ include::{snippets}/testPhoneAuthenticationPasswordReset/http-response.adoc[]
 
 Information::
 - Method : `PATCH`
-- URL : `/api/auth/phone/password-reset`
+- URL : `/api/auth/phone`
 - Request Type : `application/json`
 
 Request Body::
@@ -76,7 +76,35 @@ include::{snippets}/testCheckPhoneAuthentication/http-request.adoc[]
 Response Example::
 include::{snippets}/testCheckPhoneAuthentication/http-response.adoc[]
 
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E0100|발급된 인증번호와 입력한 휴대전화 인증 번호가 다를 경우
+|===
+
+
 == 회원 관련 API
+
+=== ID 중복 확인
+
+회원이 입력한 ID와 중복된 ID가 존재하는지 확인하는 API
+
+Information::
+- Method : `GET`
+- URL : `/api/user/check-duplicate`
+- Request Type : `application/json`
+
+Request Parameter::
+include::{snippets}/isDuplicateIdTest/request-parameters.adoc[]
+
+Response Body::
+include::{snippets}/isDuplicateIdTest/response-fields.adoc[]
+
+Request Example::
+include::{snippets}/isDuplicateIdTest/http-request.adoc[]
+
+Response Example::
+include::{snippets}/isDuplicateIdTest/http-response.adoc[]
 
 === 회원 생성
 
@@ -100,19 +128,11 @@ include::{snippets}/signInTest/http-request.adoc[]
 Response Example::
 include::{snippets}/signInTest/http-response.adoc[]
 
-Error Code::
-
 [cols="1, 2, 7",options=header]
 |===
 |Status|Error Code|Desc
-|400|E0118|비밀번호에 사용이 불가능한 문자가 포함되거나, 길이 제약을 벗어나는 경우
-|400|E0123|2주 내에 탈퇴한 회원과 동일한 휴대전화 번호를 입력한 경우
-|400|E0124|2주 내에 탈퇴한 회원과 동일한 이메일 주소를 입력한 경우
-|400|E0128|로그인 ID가 정의된 패턴에 어긋나는 경우
-|400|E0129|닉네임 형식이 정의된 패턴에 어긋나는 경우
-|400|E0130|비밀번호에 대문자와 특수문자가 각 1자 이상 포함되지 않은 경우
-|400|E0131|이메일 형식이 정의된 패턴에 어긋나는 경우
-|400|E0900|닉네임에 금지어가 포함되어 있을 경우
+|400|E0101|인증이 완료되지 않은 휴대전화 번호인 경우
+|400|E0102|인증 완료 이후, 유효 기간이 초과하여, 재인증이 필요한 경우 (인증 완료 이후 30분 경과)
 |===
 
 === 로그인
@@ -137,6 +157,11 @@ include::{snippets}/loginInTest/http-request.adoc[]
 Response Example::
 include::{snippets}/loginInTest/http-response.adoc[]
 
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E2000|로그인 정보가 일치하지 않는 경우
+|===
 
 === 회원 정보 확인
 
@@ -144,7 +169,7 @@ include::{snippets}/loginInTest/http-response.adoc[]
 
 Information::
 - Method : `GET`
-- URL : `/api/user`
+- URL : `/api/user/info`
 - Request Type : `application/json`
 
 Request Header::
@@ -158,6 +183,12 @@ include::{snippets}/getUserInformationTest/http-request.adoc[]
 
 Response Example::
 include::{snippets}/getUserInformationTest/http-response.adoc[]
+
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E0103|토큰 정보에 해당하는 유저가 존재하지 않을 경우
+|===
 
 === 비밀번호 찾기
 
@@ -180,3 +211,23 @@ include::{snippets}/resetPasswordTest/http-request.adoc[]
 
 Response Example::
 include::{snippets}/resetPasswordTest/http-response.adoc[]
+
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E0104|인증이 완료된 휴대전화 번호와 기존 회원 휴대전화 번호가 일치하지 않을 경우
+|===
+
+
+== 공통 에러 코드
+
+[cols="1, 2, 7",options=header]
+|===
+|Status|Error Code|Desc
+|400|E0001|프로그램 진행 중 전달된 Parameter 원인으로 발생된 에러일 경우 전달
+|403|E0002|Token expired 시 전달
+|404|E0003|잘못된 URL 호출
+|400|E0004|스프링 @Valid 어노테이션으로 확인된 Parameter 에러
+|400|E0005|필수 헤더 값 셋팅 관련 에러
+|401|E0006|Token expired 를 제외한 Token 관련 에러 발생 시 전달
+|===

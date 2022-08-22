@@ -17,7 +17,7 @@ public class CheckPhoneAuthReqDto {
     private TelecomCode telecomCode;
 
     @NotBlank
-    private String phoneNumber;
+    private String phone;
 
     @NotNull
     private AuthTypeCode authTypeCode;
