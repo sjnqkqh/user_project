@@ -65,4 +65,8 @@ public class User extends CommonBaseDateTime {
         this.accessExpiredAt = expiredAt;
     }
 
+    public void updatePassword(String encryptedPassword){
+        this.encryptedPassword = encryptedPassword;
+    }
+
 }

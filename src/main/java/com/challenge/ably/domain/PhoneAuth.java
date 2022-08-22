@@ -1,6 +1,7 @@
 package com.challenge.ably.domain;
 
-import com.challenge.ably.dto.auth.req.CreatePhoneAuthReqDto;
+import com.challenge.ably.dto.auth.req.PasswordResetPhoneAuthReqDto;
+import com.challenge.ably.dto.auth.req.SignInPhoneAuthReqDto;
 import com.challenge.ably.util.AuthTypeCode;
 import com.challenge.ably.util.TelecomCode;
 import com.challenge.ably.util.YnCode;
@@ -9,12 +10,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Getter
@@ -26,6 +29,10 @@ public class PhoneAuth extends CommonBaseDateTime {
     @GeneratedValue
     @Column(name = "auth_id")
     private Long phoneAuthId;
+
+    @JoinColumn(name = "user_id")
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    private User user;
 
     @Column(name = "enc_phone")
     private String encPhone;
@@ -76,13 +83,30 @@ public class PhoneAuth extends CommonBaseDateTime {
     }
 
     /**
-     * 휴대폰 인증 생성자
+     * 회원가입 - 휴대폰 인증 생성자
      *
      * @param reqDto    인증 요청 데이터
      * @param authValue 휴대폰 인증 번호
      * @param encPhone  암호화 된 휴대폰 번호
      */
-    public PhoneAuth(CreatePhoneAuthReqDto reqDto, String authValue, String encPhone) {
+    public PhoneAuth(SignInPhoneAuthReqDto reqDto, String authValue, String encPhone) {
+        this.telecomCode = reqDto.getTelecomCode();
+        this.authValue = authValue;
+        this.encPhone = encPhone;
+        this.authTypeCode = reqDto.getAuthTypeCode();
+        this.authorizedYn = YnCode.N;
+        this.authUntil = LocalDateTime.now().plusMinutes(3);
+    }
+
+    /**
+     * 비밀번호 변경 - 휴대폰 인증 생성자
+     *
+     * @param reqDto    인증 요청 데이터
+     * @param authValue 휴대폰 인증 번호
+     * @param encPhone  암호화 된 휴대폰 번호
+     */
+    public PhoneAuth(PasswordResetPhoneAuthReqDto reqDto, User user,String authValue, String encPhone) {
+        this.user = user;
         this.telecomCode = reqDto.getTelecomCode();
         this.authValue = authValue;
         this.encPhone = encPhone;

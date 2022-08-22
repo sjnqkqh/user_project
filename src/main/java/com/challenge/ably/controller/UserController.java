@@ -3,18 +3,18 @@ package com.challenge.ably.controller;
 import com.challenge.ably.dto.CommonRespDto;
 import com.challenge.ably.dto.user.req.CheckLoginIdReqDto;
 import com.challenge.ably.dto.user.req.LoginReqDto;
+import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.dto.user.resp.LoginRespDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.service.AuthService;
 import com.challenge.ably.service.UserService;
 import com.challenge.ably.util.AuthTypeCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +70,7 @@ public class UserController {
      * @return 로그인 결과과
      */
     @PostMapping("/api/user/login")
-    public LoginRespDto login(@RequestBody @Valid LoginReqDto reqDto) throws Exception {
+    public LoginRespDto login(@RequestBody @Valid LoginReqDto reqDto) {
         Long userId = userService.login(reqDto);
 
         return new LoginRespDto(userService.giveLoginAuthToken(userId));
@@ -89,12 +89,16 @@ public class UserController {
     /**
      * 비밀번호 변경
      *
-     * @return
+     * @return 비밀번호 변경 성공 여부
      */
-    @GetMapping("/api/user/info")
-    public UserInfoRespDto resetPassword(@RequestAttribute(name = "id") Long userId) throws Exception {
-        return userService.searchUserInfo(userId);
+    @PatchMapping("/api/user/password")
+    public CommonRespDto resetPassword(@RequestBody PasswordResetReqDto reqDto) throws Exception {
+        Long authId = authService.validatePhoneAuth(reqDto.getPhone(), reqDto.getTelecomCode(), AuthTypeCode.PASSWORD_RESET, reqDto.getAuthentication());
+
+        userService.resetPassword(reqDto);
+
+        authService.deletePhoneAuthHistory(authId);
+
+        return new CommonRespDto(true);
     }
-
-
 }
