@@ -66,7 +66,7 @@ public class TestAuthenticationAPI {
     @Test
     void testPhoneAuthenticationSignIn() throws Exception {
         /* Given */
-        SignInPhoneAuthReqDto reqDto = new SignInPhoneAuthReqDto(TelecomCode.LGU, "01012341234", AuthTypeCode.SIGN_IN);
+        SignInPhoneAuthReqDto reqDto = new SignInPhoneAuthReqDto(TelecomCode.LGU, "01012341234");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -99,7 +99,7 @@ public class TestAuthenticationAPI {
     void testPhoneAuthenticationPasswordReset() throws Exception {
         /* Given */
         PasswordResetPhoneAuthReqDto reqDto
-            = new PasswordResetPhoneAuthReqDto("HIRING_TEST", "test@hiring.co.kr", TelecomCode.LGU, "01012341234", AuthTypeCode.PASSWORD_RESET);
+            = new PasswordResetPhoneAuthReqDto("HIRING_TEST", "test@hiring.co.kr", TelecomCode.LGU, "01012341234");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

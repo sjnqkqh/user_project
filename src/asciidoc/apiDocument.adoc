@@ -218,6 +218,27 @@ include::{snippets}/resetPasswordTest/http-response.adoc[]
 |400|E0104|인증이 완료된 휴대전화 번호와 기존 회원 휴대전화 번호가 일치하지 않을 경우
 |===
 
+== 인증 유형 코드
+
+[cols="2, 7",options=header]
+|===
+|Code||Desc
+|SIGN_IN|회원가입 휴대전화 인증
+|PASSWORD_RESET|비밀번호 찾기 휴대전화 인증
+|===
+
+== 통신사 코드
+
+[cols="2, 7",options=header]
+|===
+|Telecom Code|Desc
+|SKT|SKT 통신사
+|KT|KT 통신사
+|LGU|LGU 통신사
+|SAVE_SKT|SKT 알뜰폰 통신사
+|SAVE_KT|KT 알뜰폰 통신사
+|SAVE_LGU|LGU 알뜰폰 통신사
+|===
 
 == 공통 에러 코드
 
@@ -232,3 +253,4 @@ include::{snippets}/resetPasswordTest/http-response.adoc[]
 |401|E0006|Token expired 를 제외한 Token 관련 오류 발생 시 전달
 |400|E9999|비즈니스 로직 내에서 예상하지 못한 오류
 |===
+
