@@ -1,6 +1,6 @@
 package com.challenge.ably.dto.user.req;
 
-import com.challenge.ably.util.TelecomCode;
+import com.challenge.ably.util.code.TelecomCode;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

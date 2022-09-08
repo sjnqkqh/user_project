@@ -1,6 +1,7 @@
 package com.challenge.ably.controller;
 
 import com.challenge.ably.dto.CommonRespDto;
+import com.challenge.ably.dto.user.UserTokenDto;
 import com.challenge.ably.dto.user.req.LoginReqDto;
 import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
@@ -9,7 +10,8 @@ import com.challenge.ably.dto.user.resp.LoginRespDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.service.AuthService;
 import com.challenge.ably.service.UserService;
-import com.challenge.ably.util.AuthTypeCode;
+import com.challenge.ably.service.UserTokenService;
+import com.challenge.ably.util.code.AuthTypeCode;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final AuthService authService;
+    private final UserTokenService userTokenService;
 
     /**
      * 회원가입
@@ -71,9 +74,14 @@ public class UserController {
      */
     @PostMapping("/api/user/login")
     public LoginRespDto login(@RequestBody @Valid LoginReqDto reqDto) {
+        // 회원 로그인 처리
         Long userId = userService.login(reqDto);
 
-        return new LoginRespDto(userService.giveLoginAuthToken(userId));
+        // Redis와 DB에 토큰 저장
+        UserTokenDto tokenDto = userService.giveLoginAuthToken(userId);
+        userTokenService.saveUserToken(tokenDto);
+
+        return new LoginRespDto(userService.giveLoginAuthToken(userId).getAccessToken());
     }
 
     /**

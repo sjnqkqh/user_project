@@ -2,9 +2,9 @@ package com.challenge.ably.domain;
 
 import com.challenge.ably.dto.auth.req.PasswordResetPhoneAuthReqDto;
 import com.challenge.ably.dto.auth.req.SignInPhoneAuthReqDto;
-import com.challenge.ably.util.AuthTypeCode;
-import com.challenge.ably.util.TelecomCode;
-import com.challenge.ably.util.YnCode;
+import com.challenge.ably.util.code.AuthTypeCode;
+import com.challenge.ably.util.code.TelecomCode;
+import com.challenge.ably.util.code.YnCode;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;

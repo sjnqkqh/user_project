@@ -1,6 +1,6 @@
 package com.challenge.ably.config;
 
-import com.challenge.ably.util.ApiExceptionCode;
+import com.challenge.ably.util.code.ApiExceptionCode;
 import lombok.Getter;
 
 @Getter

@@ -1,10 +1,9 @@
 package com.challenge.ably.dto.auth.req;
 
-import com.challenge.ably.util.AuthTypeCode;
-import com.challenge.ably.util.TelecomCode;
+import com.challenge.ably.util.code.AuthTypeCode;
+import com.challenge.ably.util.code.TelecomCode;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

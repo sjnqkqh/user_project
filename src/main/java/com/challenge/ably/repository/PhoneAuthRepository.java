@@ -1,11 +1,10 @@
 package com.challenge.ably.repository;
 
 import com.challenge.ably.domain.PhoneAuth;
-import com.challenge.ably.util.AuthTypeCode;
-import com.challenge.ably.util.TelecomCode;
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import com.challenge.ably.util.code.AuthTypeCode;
+import com.challenge.ably.util.code.TelecomCode;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PhoneAuthRepository extends JpaRepository<PhoneAuth, Long> {
 

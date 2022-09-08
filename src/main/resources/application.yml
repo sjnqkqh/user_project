@@ -18,6 +18,10 @@ spring:
     init:
       schema-locations: classpath*:static/schema.sql
 
+  redis:
+    host: localhost
+    port: 6379
+
 # JWT 관련 설정
 jwt.token:
   secret-key: PIC584tlILWtwxwTEK0RRogziyJWzGIbDFcaLLKnyC

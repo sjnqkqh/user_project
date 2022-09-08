@@ -1,4 +1,4 @@
-package com.challenge.ably.util;
+package com.challenge.ably.util.code;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

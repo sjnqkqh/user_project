@@ -2,18 +2,19 @@ package com.challenge.ably.service;
 
 import com.challenge.ably.config.CommonException;
 import com.challenge.ably.domain.User;
+import com.challenge.ably.dto.user.UserTokenDto;
 import com.challenge.ably.dto.user.req.LoginReqDto;
 import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.repository.UserRepository;
-import com.challenge.ably.util.ApiExceptionCode;
 import com.challenge.ably.util.BcryptUtil;
 import com.challenge.ably.util.EncryptUtil;
 import com.challenge.ably.util.JwtTokenProvideUtil;
 import com.challenge.ably.util.RegexUtil;
 import com.challenge.ably.util.StringUtil;
-import com.challenge.ably.util.YnCode;
+import com.challenge.ably.util.code.ApiExceptionCode;
+import com.challenge.ably.util.code.YnCode;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -101,17 +102,17 @@ public class UserService {
         );
     }
 
-    /**
-     * AccessToken으로 회원 정보 조회
-     *
-     * @param accessToken 헤더에 포함된 액세스 토큰 값
-     * @return 회원 객체
-     */
-    @Transactional(readOnly = true)
-    public User searchUser(String accessToken) {
-        return userRepository.findFirstByAccessTokenAndDeleteYnOrderByCreatedAtDesc(accessToken, YnCode.N)
-            .orElseThrow(() -> new CommonException(ApiExceptionCode.TOKEN_NOT_EXIST_ERROR));
-    }
+//    /**
+//     * AccessToken으로 회원 정보 조회
+//     *
+//     * @param accessToken 헤더에 포함된 액세스 토큰 값
+//     * @return 회원 객체
+//     */
+//    @Transactional(readOnly = true)
+//    public User searchUser(String accessToken) {
+//        return userRepository.findFirstByAccessTokenAndDeleteYnOrderByCreatedAtDesc(accessToken, YnCode.N)
+//            .orElseThrow(() -> new CommonException(ApiExceptionCode.TOKEN_NOT_EXIST_ERROR));
+//    }
 
 
     /**
@@ -130,7 +131,7 @@ public class UserService {
      * 로그인
      *
      * @param reqDto ID, PW
-     * @return 로그인 성공 여부
+     * @return 로그인 된 회원 ID
      */
     @Transactional(readOnly = true)
     public Long login(LoginReqDto reqDto) {
@@ -150,19 +151,25 @@ public class UserService {
     }
 
     /**
-     * 로그인 이후 Access Token 발급
+     * 로그인 이후 JWT Token 발급
      *
      * @param userId 회원 ID
      * @return Access Token
      */
     @Transactional
-    public String giveLoginAuthToken(Long userId) {
-        Long expiredAt = System.currentTimeMillis() + (1000 * 60 * 60 * 3); // 토큰 만료 시각
+    public UserTokenDto giveLoginAuthToken(Long userId) {
         LocalDateTime expiredLocal = LocalDateTime.now().plusHours(3); // 토큰 만료 시각
-        String accessToken = JwtTokenProvideUtil.doGenerateToken(StringUtil.getUUID(), expiredAt); // 해당 회원 Access Token
-        searchUser(userId).setAccessToken(accessToken, expiredLocal); // 회원 정보에 토큰 정보 삽입
 
-        return accessToken;
+        // 회원 정보 조회
+        User user = searchUser(userId);
+
+        // JWT 토큰 생성
+        String accessToken = JwtTokenProvideUtil.generateAccessToken(StringUtil.getUUID());
+        String refreshToken = JwtTokenProvideUtil.generateRefreshToken(StringUtil.getUUID());
+
+        // Access Token은 Cache 저장소(Redis)에 저장후 API Resp로 반환, Refresh Token은 DB에 저장
+
+        return new UserTokenDto(user, accessToken, refreshToken, expiredLocal);
     }
 
     /**

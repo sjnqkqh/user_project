@@ -19,14 +19,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.challenge.ably.config.AuthenticationInterceptor;
 import com.challenge.ably.config.EnableMockMvcUTF8;
 import com.challenge.ably.config.RestDocConfiguration;
+import com.challenge.ably.domain.User;
+import com.challenge.ably.dto.user.UserTokenDto;
 import com.challenge.ably.dto.user.req.LoginReqDto;
 import com.challenge.ably.dto.user.req.PasswordResetReqDto;
 import com.challenge.ably.dto.user.req.UserCreateReqDto;
 import com.challenge.ably.dto.user.resp.UserInfoRespDto;
 import com.challenge.ably.service.AuthService;
 import com.challenge.ably.service.UserService;
-import com.challenge.ably.util.TelecomCode;
+import com.challenge.ably.service.UserTokenService;
+import com.challenge.ably.util.code.TelecomCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -62,6 +66,9 @@ public class TestUserAPI {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private UserTokenService userTokenService;
 
     @MockBean
     private AuthenticationInterceptor authenticationInterceptor;
@@ -144,7 +151,8 @@ public class TestUserAPI {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         willReturn(0L).given(userService).login(reqDto);
-        willReturn("Login Access Token").given(userService).giveLoginAuthToken(any());
+        willReturn(new UserTokenDto(new User(), "access_token", "refresh_token", LocalDateTime.now())).given(userService).giveLoginAuthToken(any());
+        willDoNothing().given(userTokenService).saveUserToken(any());
 
         /* When */
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/user/login")
