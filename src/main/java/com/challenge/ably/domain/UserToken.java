@@ -9,9 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @Getter
+@ToString
 @Entity(name = "TB_USER_TOKEN")
 @NoArgsConstructor
 public class UserToken extends CommonBaseDateTime {

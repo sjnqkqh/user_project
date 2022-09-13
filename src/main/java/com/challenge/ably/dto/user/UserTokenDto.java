@@ -14,16 +14,16 @@ public class UserTokenDto {
     private User user;
 
     private String accessToken;
+    private LocalDateTime expiredAt;
 
     private String refreshToken;
-
     private LocalDateTime refreshTokenExpiredAt;
 
-    public RedisUserToken toRedisTokenEntity(){
-        return new RedisUserToken(accessToken, user.getUserId());
+    public RedisUserToken toRedisTokenEntity() {
+        return new RedisUserToken(accessToken, expiredAt, user.getUserId());
     }
 
-    public UserToken toDatabaseTokenEntity(){
+    public UserToken toDatabaseTokenEntity() {
         return new UserToken(user, accessToken, refreshToken, refreshTokenExpiredAt);
     }
 

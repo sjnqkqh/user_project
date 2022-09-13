@@ -158,8 +158,6 @@ public class UserService {
      */
     @Transactional
     public UserTokenDto giveLoginAuthToken(Long userId) {
-        LocalDateTime expiredLocal = LocalDateTime.now().plusHours(3); // 토큰 만료 시각
-
         // 회원 정보 조회
         User user = searchUser(userId);
 
@@ -167,9 +165,11 @@ public class UserService {
         String accessToken = JwtTokenProvideUtil.generateAccessToken(StringUtil.getUUID());
         String refreshToken = JwtTokenProvideUtil.generateRefreshToken(StringUtil.getUUID());
 
-        // Access Token은 Cache 저장소(Redis)에 저장후 API Resp로 반환, Refresh Token은 DB에 저장
+        // 각 토큰별 만료시각
+        LocalDateTime accessTokenExpiredAt = (LocalDateTime) JwtTokenProvideUtil.extractAllClaims(accessToken).get("expiredAt");
+        LocalDateTime refreshTokenExpiredAt = (LocalDateTime) JwtTokenProvideUtil.extractAllClaims(refreshToken).get("expiredAt");
 
-        return new UserTokenDto(user, accessToken, refreshToken, expiredLocal);
+        return new UserTokenDto(user, accessToken, accessTokenExpiredAt, refreshToken, refreshTokenExpiredAt);
     }
 
     /**

@@ -40,7 +40,6 @@ public class JwtTokenProvideUtil {
     }
 
     private static Key getSigningKey() {
-        System.out.println("tokenSecretKey = " + tokenSecretKey);
         byte[] keyBytes = tokenSecretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
