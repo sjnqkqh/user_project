@@ -18,5 +18,15 @@ public class TimeUtil {
         return Date.from(zdt.toInstant());
     }
 
+    /**
+     * Date -> LocalDateTime (java.util) 변환 함수
+     *
+     * @param date 변환할 LocalDateTime 객체
+     * @return 변환된 Date 객체
+     */
+    public static LocalDateTime convertDateToLocalDateTime(Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
 
 }

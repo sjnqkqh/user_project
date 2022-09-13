@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 public enum ApiExceptionCode {
 
     BAD_REQUEST_EXCEPTION(HttpStatus.BAD_REQUEST, "E0001", "Bad Request Exception"),
-    TOKEN_EXPIRED_EXCEPTION(HttpStatus.FORBIDDEN, "E0002", "Token Expired"),
+    TOKEN_EXPIRED_EXCEPTION(HttpStatus.I_AM_A_TEAPOT, "E0002", "Token Expired"),
     NO_HANDLER_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "E0003", "Page not found"),
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "E0004", "Method argument validation fail"),
     HEADER_FIELD_EXCEPTION(HttpStatus.BAD_REQUEST, "E0005", "Header setting error"),
     TOKEN_NOT_EXIST_ERROR(HttpStatus.BAD_REQUEST, "E0006", "Access Token does not exist."),
-
+    ACCESS_TOKEN_EXPIRED_EXCEPTION(HttpStatus.FORBIDDEN, "E0007", "Refresh Token Expired"),
 
     PHONE_AUTHENTICATE_FAIL_ERROR(HttpStatus.BAD_REQUEST, "E0100", "Fail to phone authenticate"),
     NOT_AUTHENTICATED_PHONE_ERROR(HttpStatus.BAD_REQUEST, "E0101", "It's not authenticated phone information"),

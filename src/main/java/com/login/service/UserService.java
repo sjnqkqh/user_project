@@ -102,19 +102,6 @@ public class UserService {
         );
     }
 
-//    /**
-//     * AccessToken으로 회원 정보 조회
-//     *
-//     * @param accessToken 헤더에 포함된 액세스 토큰 값
-//     * @return 회원 객체
-//     */
-//    @Transactional(readOnly = true)
-//    public User searchUser(String accessToken) {
-//        return userRepository.findFirstByAccessTokenAndDeleteYnOrderByCreatedAtDesc(accessToken, YnCode.N)
-//            .orElseThrow(() -> new CommonException(ApiExceptionCode.TOKEN_NOT_EXIST_ERROR));
-//    }
-
-
     /**
      * 회원 생성
      *
@@ -134,7 +121,7 @@ public class UserService {
      * @return 로그인 된 회원 ID
      */
     @Transactional(readOnly = true)
-    public Long login(LoginReqDto reqDto) {
+    public User login(LoginReqDto reqDto) {
         Optional<User> userOptional = userRepository.findFirstByLoginIdAndDeleteYnOrderByCreatedAtDesc(reqDto.getLoginId(), YnCode.N);
         if (userOptional.isEmpty()) {
             log.info("[UserService.login] Login Fail. ID:" + reqDto.getLoginId());
@@ -147,7 +134,7 @@ public class UserService {
             throw new CommonException(ApiExceptionCode.LOGIN_FAIL_ERROR);
         }
 
-        return user.getUserId();
+        return user;
     }
 
     /**
@@ -166,10 +153,10 @@ public class UserService {
         String refreshToken = JwtTokenProvideUtil.generateRefreshToken(StringUtil.getUUID());
 
         // 각 토큰별 만료시각
-        LocalDateTime accessTokenExpiredAt = (LocalDateTime) JwtTokenProvideUtil.extractAllClaims(accessToken).get("expiredAt");
-        LocalDateTime refreshTokenExpiredAt = (LocalDateTime) JwtTokenProvideUtil.extractAllClaims(refreshToken).get("expiredAt");
+        LocalDateTime accessExpiredAt = JwtTokenProvideUtil.extractExpiredAt(accessToken);
+        LocalDateTime refreshExpiredAt = JwtTokenProvideUtil.extractExpiredAt(refreshToken);
 
-        return new UserTokenDto(user, accessToken, accessTokenExpiredAt, refreshToken, refreshTokenExpiredAt);
+        return new UserTokenDto(user, accessToken, accessExpiredAt, refreshToken, refreshExpiredAt);
     }
 
     /**

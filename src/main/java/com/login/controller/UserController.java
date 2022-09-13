@@ -1,7 +1,7 @@
 package com.login.controller;
 
+import com.login.domain.User;
 import com.login.dto.CommonRespDto;
-import com.login.dto.user.UserTokenDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
 import com.login.dto.user.req.UserCreateReqDto;
@@ -75,13 +75,12 @@ public class UserController {
     @PostMapping("/api/user/login")
     public LoginRespDto login(@RequestBody @Valid LoginReqDto reqDto) {
         // 회원 로그인 처리
-        Long userId = userService.login(reqDto);
+        User user = userService.login(reqDto);
 
         // Redis와 DB에 토큰 저장
-        UserTokenDto tokenDto = userService.giveLoginAuthToken(userId);
-        userTokenService.saveUserToken(tokenDto);
+        String accessToken = userTokenService.saveUserToken(user).getAccessToken();
 
-        return new LoginRespDto(userService.giveLoginAuthToken(userId).getAccessToken());
+        return new LoginRespDto(accessToken);
     }
 
     /**

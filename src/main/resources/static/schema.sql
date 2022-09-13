@@ -23,18 +23,21 @@ CREATE TABLE TB_USER
 );
 
 CREATE INDEX EMAIL_IDX ON TB_USER (login_id);
+insert into tb_user (user_id, created_at, updated_at, delete_yn, email, enc_password, enc_phone, login_id, nickname)
+values (default, default, default, 'N', 'test@hiring.co.kr', '$2a$10$34Exz.d/pt1LHB/30jQazuRYQpuhSpT7ihmiL1SOT3t9APv6dVSMK', 'k8VwutUqQwM0PPiGCtHjVg',
+        'TestLoginId', 'nick');
 
 /*======================================================================================================================================*/
 
 CREATE TABLE TB_USER_TOKEN
 (
     token_id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id                  BIGINT            NOT NULL REFERENCES TB_USER (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id                  BIGINT              NOT NULL REFERENCES TB_USER (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     access_token             VARCHAR(500) UNIQUE NOT NULL,
     refresh_token            VARCHAR(500) UNIQUE NOT NULL,
-    refresh_token_expired_at DATETIME          NOT NULL DEFAULT SYSTIMESTAMP,
-    created_at               DATETIME          NOT NULL DEFAULT SYSTIMESTAMP,
-    updated_at               DATETIME          NOT NULL DEFAULT SYSTIMESTAMP
+    refresh_token_expired_at DATETIME            NOT NULL DEFAULT SYSTIMESTAMP,
+    created_at               DATETIME            NOT NULL DEFAULT SYSTIMESTAMP,
+    updated_at               DATETIME            NOT NULL DEFAULT SYSTIMESTAMP
 );
 
 CREATE INDEX ACCESS_TOKEN_IDX on TB_USER_TOKEN (access_token);

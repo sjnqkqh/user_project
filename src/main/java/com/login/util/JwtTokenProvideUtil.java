@@ -10,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,6 +102,19 @@ public class JwtTokenProvideUtil {
      */
     public static Claims extractAllClaims(String token) throws ExpiredJwtException {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).requireIssuer(issuer).build().parseClaimsJws(token).getBody();
+    }
+
+    /**
+     * 토큰이 유효한 토큰인지 검사한 후, 토큰에 담긴 만료 시간(exp) 반환
+     *
+     * @param token 토큰 정보
+     * @return 토큰 만료 시각
+     * @throws ExpiredJwtException 토큰만료
+     */
+    public static LocalDateTime extractExpiredAt(String token) throws ExpiredJwtException {
+        Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).requireIssuer(issuer).build().parseClaimsJws(token).getBody();
+        Date dateExp = claims.getExpiration();
+        return LocalDateTime.ofInstant(dateExp.toInstant(), ZoneId.systemDefault());
     }
 
 }
