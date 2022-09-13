@@ -20,8 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.login.config.AuthenticationInterceptor;
 import com.login.config.EnableMockMvcUTF8;
 import com.login.config.RestDocConfiguration;
-import com.login.domain.User;
-import com.login.dto.user.UserTokenDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
 import com.login.dto.user.req.UserCreateReqDto;
@@ -30,7 +28,6 @@ import com.login.service.AuthService;
 import com.login.service.UserService;
 import com.login.service.UserTokenService;
 import com.login.util.code.TelecomCode;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -151,7 +148,7 @@ public class TestUserAPI {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         willReturn(0L).given(userService).login(reqDto);
-        willReturn(new UserTokenDto(new User(), "access_token", "refresh_token", LocalDateTime.now())).given(userService).giveLoginAuthToken(any());
+//        willReturn(new UserTokenDto(new User(), "access_token", "refresh_token", LocalDateTime.now())).given(userService).giveLoginAuthToken(any());
         willDoNothing().given(userTokenService).saveUserToken(any());
 
         /* When */
