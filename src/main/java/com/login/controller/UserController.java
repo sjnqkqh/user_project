@@ -12,9 +12,12 @@ import com.login.service.AuthService;
 import com.login.service.UserService;
 import com.login.service.UserTokenService;
 import com.login.util.code.AuthTypeCode;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -107,5 +110,17 @@ public class UserController {
         authService.deletePhoneAuthHistory(authId);
 
         return new CommonRespDto(true);
+    }
+
+    /**
+     * JWT 토큰 갱신
+     *
+     * @return 갱신된 Access Token
+     */
+    @PatchMapping("/api/user/token/renew")
+    public LoginRespDto renewJwtToken(HttpServletRequest request, @RequestBody PasswordResetReqDto reqDto) throws Exception {
+        String accessToken = StringUtils.replaceOnce(request.getHeader(HttpHeaders.AUTHORIZATION), "bearer ", "");
+
+        return new LoginRespDto(userTokenService.renewAccessUserToken(accessToken).getAccessToken());
     }
 }

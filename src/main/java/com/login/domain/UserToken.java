@@ -42,4 +42,18 @@ public class UserToken extends CommonBaseDateTime {
         this.refreshToken = refreshToken;
         this.refreshTokenExpiredAt = refreshTokenExpiredAt;
     }
+
+    /**
+     * Access Token 갱신
+     *
+     * @param accessToken 새로 등록할 Access Token
+     */
+    public void updateAccessToken(String accessToken){
+        this.accessToken = accessToken;
+    }
+
+    public void updateRefreshToken(String refreshToken, LocalDateTime exp){
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiredAt = exp;
+    }
 }
