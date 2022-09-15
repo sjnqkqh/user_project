@@ -1,31 +1,25 @@
 DROP TABLE IF EXISTS TB_USER_TOKEN;
 DROP TABLE IF EXISTS TB_PHONE_AUTH;
 DROP TABLE IF EXISTS TB_USER;
+DROP TABLE IF EXISTS TB_BOARD;
 
-DROP INDEX IF EXISTS EMAIL_IDX;
-DROP INDEX IF EXISTS ACCESS_TOKEN_IDX;
-DROP INDEX IF EXISTS PHONE_INFO_IDX;
-DROP INDEX IF EXISTS AUTHENTICATION_IDX;
 
 /*======================================================================================================================================*/
 
 CREATE TABLE TB_USER
 (
-    user_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id      BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     login_id     VARCHAR(100) NOT NULL,
     email        VARCHAR(100) NOT NULL,
     enc_password VARCHAR(100) NOT NULL,
     nickname     VARCHAR(40)  NOT NULL,
     enc_phone    VARCHAR(50)  NOT NULL,
     delete_yn    VARCHAR(1)   NOT NULL DEFAULT 'N',
-    created_at   DATETIME     NOT NULL DEFAULT SYSTIMESTAMP,
-    updated_at   DATETIME     NOT NULL DEFAULT SYSTIMESTAMP
+    created_at   DATETIME     NOT NULL DEFAULT NOW(),
+    updated_at   DATETIME     NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX EMAIL_IDX ON TB_USER (login_id);
-insert into tb_user (user_id, created_at, updated_at, delete_yn, email, enc_password, enc_phone, login_id, nickname)
-values (default, default, default, 'N', 'test@hiring.co.kr', '$2a$10$34Exz.d/pt1LHB/30jQazuRYQpuhSpT7ihmiL1SOT3t9APv6dVSMK', 'k8VwutUqQwM0PPiGCtHjVg',
-        'TestLoginId', 'nick');
 
 /*======================================================================================================================================*/
 
@@ -35,9 +29,9 @@ CREATE TABLE TB_USER_TOKEN
     user_id                  BIGINT              NOT NULL REFERENCES TB_USER (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     access_token             VARCHAR(500) UNIQUE NOT NULL,
     refresh_token            VARCHAR(500) UNIQUE NOT NULL,
-    refresh_token_expired_at DATETIME            NOT NULL DEFAULT SYSTIMESTAMP,
-    created_at               DATETIME            NOT NULL DEFAULT SYSTIMESTAMP,
-    updated_at               DATETIME            NOT NULL DEFAULT SYSTIMESTAMP
+    refresh_token_expired_at DATETIME            NOT NULL DEFAULT NOW(),
+    created_at               DATETIME            NOT NULL DEFAULT NOW(),
+    updated_at               DATETIME            NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX ACCESS_TOKEN_IDX on TB_USER_TOKEN (access_token);
@@ -54,10 +48,10 @@ CREATE TABLE TB_PHONE_AUTH
     authentication  VARCHAR(200) NULL,
     AUTHORIZED_YN   CHAR(1)      NOT NULL DEFAULT 'N',
     auth_type       ENUM ('SIGN_IN', 'PASSWORD_RESET'),
-    auth_until      DATETIME     NOT NULL DEFAULT SYSTIMESTAMP,
+    auth_until      DATETIME     NOT NULL DEFAULT NOW(),
     guarantee_until DATETIME     NULL,
-    created_at      DATETIME     NOT NULL DEFAULT SYSTIMESTAMP,
-    updated_at      DATETIME     NOT NULL DEFAULT SYSTIMESTAMP
+    created_at      DATETIME     NOT NULL DEFAULT NOW(),
+    updated_at      DATETIME     NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX PHONE_INFO_IDX ON TB_PHONE_AUTH (enc_phone, telecom_code, auth_type);
@@ -65,3 +59,15 @@ CREATE INDEX AUTHENTICATION_IDX ON TB_PHONE_AUTH (auth_type, authentication);
 
 /*======================================================================================================================================*/
 
+CREATE TABLE TB_BOARD
+(
+    id         bigint unsigned NOT NULL AUTO_INCREMENT,
+    user_id    bigint       NOT NULL,
+    title      varchar(255) NOT NULL,
+    content    text         NOT NULL,
+    created_at datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY        fk_board_to_user_idx (user_id),
+    KEY        fk_board_to_user (user_id)
+);

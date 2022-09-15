@@ -14,10 +14,6 @@ spring:
     console:
       enabled: true
 
-  sql:
-    init:
-      schema-locations: classpath*:static/schema.sql
-
   redis:
     host: localhost
     port: 6379
