@@ -3,9 +3,9 @@ package com.login.service;
 import com.login.config.CommonException;
 import com.login.domain.User;
 import com.login.dto.user.UserTokenDto;
+import com.login.dto.user.req.CreateUserReqDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
-import com.login.dto.user.req.UserCreateReqDto;
 import com.login.dto.user.resp.UserInfoRespDto;
 import com.login.repository.UserRepository;
 import com.login.util.BcryptUtil;
@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class UserService {
      * @param reqDto 회원 생성 DTO
      */
     @Transactional(readOnly = true)
-    public void validateCreateUser(UserCreateReqDto reqDto) {
+    public void validateCreateUser(CreateUserReqDto reqDto) {
 
         // 로그인 ID 유효성 검사
         if (!RegexUtil.checkLoginIdPattern(reqDto.getLoginId())) {
@@ -55,6 +56,11 @@ public class UserService {
         if (!RegexUtil.checkPhoneNumberPattern(reqDto.getPhone())) {
             throw new CommonException("Phone Number validation fail.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
         }
+
+        // 닉네임 유효성 검사
+        if (!StringUtils.isEmpty(reqDto.getNickname())) {
+            throw new CommonException("Nickname is Empty.", ApiExceptionCode.REQUEST_VALIDATION_EXCEPTION);
+        }
     }
 
     /**
@@ -62,7 +68,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public boolean isDuplicateLoginId(String loginId) {
-        return userRepository.existsByLoginIdAndDeleteYn(loginId, YnCode.Y);
+        return userRepository.existsByLoginIdAndUseYn(loginId, YnCode.Y);
     }
 
     /**
@@ -97,7 +103,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public User searchUserByLoginIdAndEmail(String loginId, String email) {
-        return userRepository.findFirstByLoginIdAndEmailAndDeleteYnOrderByCreatedAtDesc(loginId, email, YnCode.N).orElseThrow(
+        return userRepository.findFirstByLoginIdAndEmailAndUseYnOrderByCreatedAtDesc(loginId, email, YnCode.N).orElseThrow(
             ()-> new CommonException(ApiExceptionCode.NOT_EXIST_USER_INFORMATION_ERROR)
         );
     }
@@ -108,10 +114,10 @@ public class UserService {
      * @param reqDto 회원 생성 DTO
      */
     @Transactional
-    public void createUser(UserCreateReqDto reqDto) throws Exception {
+    public User createUser(CreateUserReqDto reqDto) throws Exception {
         String encPhone = EncryptUtil.encryptAES256(reqDto.getPhone());
         String hashedPassword = BcryptUtil.bcryptEncode(reqDto.getPassword());
-        userRepository.save(new User(reqDto, encPhone, hashedPassword));
+        return userRepository.save(new User(reqDto, encPhone, hashedPassword));
     }
 
     /**
@@ -122,7 +128,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public User login(LoginReqDto reqDto) {
-        Optional<User> userOptional = userRepository.findFirstByLoginIdAndDeleteYnOrderByCreatedAtDesc(reqDto.getLoginId(), YnCode.N);
+        Optional<User> userOptional = userRepository.findFirstByLoginIdAndUseYnOrderByCreatedAtDesc(reqDto.getLoginId(), YnCode.N);
         if (userOptional.isEmpty()) {
             log.info("[UserService.login] Login Fail. ID:" + reqDto.getLoginId());
             throw new CommonException(ApiExceptionCode.LOGIN_FAIL_ERROR);

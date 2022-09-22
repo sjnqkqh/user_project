@@ -20,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.login.config.AuthenticationInterceptor;
 import com.login.config.EnableMockMvcUTF8;
 import com.login.config.RestDocConfiguration;
+import com.login.dto.user.req.CreateUserReqDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
-import com.login.dto.user.req.UserCreateReqDto;
 import com.login.dto.user.resp.UserInfoRespDto;
 import com.login.service.AuthService;
 import com.login.service.UserService;
@@ -103,7 +103,7 @@ public class TestUserAPI {
     @Test
     void signInTest() throws Exception {
         /* Given */
-        UserCreateReqDto reqDto = new UserCreateReqDto("HIRING_TEST", "test@hiring.co.kr", "password1", "hiring", "01012341234", TelecomCode.LGU, "UUID");
+        CreateUserReqDto reqDto = new CreateUserReqDto("HIRING_TEST", "test@hiring.co.kr", "password1", "hiring", "01012341234", TelecomCode.LGU, "UUID");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

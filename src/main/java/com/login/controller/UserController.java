@@ -2,13 +2,14 @@ package com.login.controller;
 
 import com.login.domain.User;
 import com.login.dto.CommonRespDto;
+import com.login.dto.user.req.CreateUserReqDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
-import com.login.dto.user.req.UserCreateReqDto;
 import com.login.dto.user.resp.LoginIdAvailableRespDto;
 import com.login.dto.user.resp.LoginRespDto;
 import com.login.dto.user.resp.UserInfoRespDto;
 import com.login.service.AuthService;
+import com.login.service.ProfileService;
 import com.login.service.UserService;
 import com.login.service.UserTokenService;
 import com.login.util.code.AuthTypeCode;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final ProfileService profileService;
     private final AuthService authService;
     private final UserTokenService userTokenService;
 
@@ -42,7 +44,7 @@ public class UserController {
      * @return 회원가입 완료 여부
      */
     @PostMapping("/api/user")
-    public CommonRespDto createUser(@RequestBody @Valid UserCreateReqDto reqDto) throws Exception {
+    public CommonRespDto createUser(@RequestBody @Valid CreateUserReqDto reqDto) throws Exception {
         // 회원가입 입력 데이터 유효성 검사
         userService.validateCreateUser(reqDto);
 
@@ -50,7 +52,10 @@ public class UserController {
         Long authId = authService.validatePhoneAuth(reqDto.getPhone(), reqDto.getTelecomCode(), AuthTypeCode.SIGN_IN, reqDto.getAuthentication());
 
         // 회원 생성
-        userService.createUser(reqDto);
+        User user = userService.createUser(reqDto);
+
+        // 프로필 데이터 생성
+        profileService.createProfile(reqDto, user);
 
         // 휴대폰 인증 데이터 제거
         authService.deletePhoneAuthHistory(authId);
@@ -118,7 +123,7 @@ public class UserController {
      * @return 갱신된 Access Token
      */
     @PatchMapping("/api/user/token/renew")
-    public LoginRespDto renewJwtToken(HttpServletRequest request, @RequestBody PasswordResetReqDto reqDto) throws Exception {
+    public LoginRespDto renewJwtToken(HttpServletRequest request) {
         String accessToken = StringUtils.replaceOnce(request.getHeader(HttpHeaders.AUTHORIZATION), "bearer ", "");
 
         return new LoginRespDto(userTokenService.renewAccessUserToken(accessToken).getAccessToken());

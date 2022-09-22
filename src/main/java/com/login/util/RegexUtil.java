@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RegexUtil {
 
-    private static final String loginIdPattern = "^[a-zA-Z0-9]{6,12}$";
-    private static final String passwordPattern = "^[A-Za-z0-9]{6,12}$";
-    private static final String phoneNumberPattern = "^01([0-9])([0-9]{3,4})([0-9]{4})$";
+    private static final String loginIdPattern = "^[a-zA-Z\\d]{6,12}$";
+    private static final String passwordPattern = "^[A-Za-z\\d]{6,12}$";
+    private static final String phoneNumberPattern = "^01(\\d)(\\d{3,4})(\\d{4})$";
 
     /**
      * 로그인 아이디 패턴 확인

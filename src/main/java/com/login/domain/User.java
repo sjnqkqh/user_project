@@ -1,6 +1,6 @@
 package com.login.domain;
 
-import com.login.dto.user.req.UserCreateReqDto;
+import com.login.dto.user.req.CreateUserReqDto;
 import com.login.util.code.YnCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,24 +33,20 @@ public class User extends CommonBaseDateTime {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "nickname")
-    private String nickname;
-
     @Column(name = "enc_phone")
     private String encryptedPhone;
 
-    @Column(name = "delete_yn")
+    @Column(name = "use_yn")
     @Enumerated(EnumType.STRING)
-    private YnCode deleteYn;
+    private YnCode useYn;
 
 
-    public User(UserCreateReqDto reqDto, String encryptedPhone, String hashedPassword) {
+    public User(CreateUserReqDto reqDto, String encryptedPhone, String hashedPassword) {
         this.loginId = reqDto.getLoginId();
         this.encryptedPassword = hashedPassword;
         this.email = reqDto.getEmail();
-        this.nickname = reqDto.getNickname();
         this.encryptedPhone = encryptedPhone;
-        this.deleteYn = YnCode.N;
+        this.useYn = YnCode.Y;
     }
 
     public void updatePassword(String encryptedPassword){

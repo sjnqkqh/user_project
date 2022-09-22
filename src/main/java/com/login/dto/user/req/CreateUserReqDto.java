@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreateReqDto {
+public class CreateUserReqDto {
 
     @NotBlank
     private String loginId;
