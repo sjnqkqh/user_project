@@ -1,6 +1,5 @@
 package com.login.domain;
 
-import com.login.dto.profile.req.UpdateProfileReqDto;
 import com.login.util.code.YnCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +14,7 @@ import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 
 @Entity
@@ -55,12 +55,23 @@ public class Profile extends CommonBaseDateTime {
         this.useYn = useYn;
     }
 
-    public void updateProfile(UpdateProfileReqDto reqDto){
-        this.nickname = reqDto.getNickname();
-        this.introduce = reqDto.getIntroduce();
+    /**
+     * 프로필 정보 수정
+     *
+     * @param nickname  변경할 닉네임
+     * @param introduce 변경할 자기소개
+     */
+    public void updateProfile(String nickname, String introduce) {
+        this.nickname = nickname;
+        this.introduce = StringUtils.defaultIfEmpty(introduce, "");
     }
 
-    public void updateProfileImage(String imageName){
+    /**
+     * 프로필 대표 이미지 변경
+     *
+     * @param imageName 대표 이미지 파일명
+     */
+    public void updateProfileImage(String imageName) {
         this.profileImgName = imageName;
     }
 }

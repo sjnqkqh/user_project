@@ -54,7 +54,7 @@ public class UserController {
         // 회원 생성
         User user = userService.createUser(reqDto);
 
-        // 프로필 데이터 생성
+        // 기본 프로필 데이터 생성
         profileService.createProfile(reqDto, user);
 
         // 휴대폰 인증 데이터 제거
