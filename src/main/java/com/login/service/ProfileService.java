@@ -44,15 +44,27 @@ public class ProfileService {
         });
     }
 
+
     /**
-     * 초기 프로필 정보 생성
+     * 신규 프로필 정보 생성 (메인 프로필 X)
      *
      * @param reqDto 회원가입 정보
      * @param user   생성된 유저
      */
+    public void createProfile(CreateUserReqDto reqDto, User user){
+        createProfile(reqDto, user, YnCode.N);
+    }
+
+    /**
+     * 프로필 정보 생성
+     *
+     * @param reqDto 회원가입 정보
+     * @param user   생성된 유저
+     * @param mainProfileYn 메인 프로필 설정 여부
+     */
     @Transactional
-    public void createProfile(CreateUserReqDto reqDto, User user) {
-        Profile profile = Profile.builder().user(user).nickname(reqDto.getNickname()).useYn(YnCode.Y).build();
+    public void createProfile(CreateUserReqDto reqDto, User user, YnCode mainProfileYn) {
+        Profile profile = Profile.builder().user(user).nickname(reqDto.getNickname()).mainProfileYn(mainProfileYn).useYn(YnCode.Y).build();
         ProfileImage profileImage = ProfileImage.builder() // 프로필 기본 이미지
             .profile(profile)
             .originFileName(StringUtil.DEFAULT_PROFILE_IMAGE)
@@ -60,8 +72,8 @@ public class ProfileService {
             .useYn(YnCode.Y)
             .build();
 
-        profileImageRepository.save(profileImage);
         profileRepository.save(profile);
+        profileImageRepository.save(profileImage);
     }
 
 

@@ -16,59 +16,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.login.config.AuthenticationInterceptor;
-import com.login.config.EnableMockMvcUTF8;
+import com.login.config.BeanExtends;
 import com.login.config.RestDocConfiguration;
+import com.login.domain.User;
+import com.login.dto.user.UserTokenDto;
 import com.login.dto.user.req.CreateUserReqDto;
 import com.login.dto.user.req.LoginReqDto;
 import com.login.dto.user.req.PasswordResetReqDto;
 import com.login.dto.user.resp.UserInfoRespDto;
-import com.login.service.AuthService;
-import com.login.service.UserService;
-import com.login.service.UserTokenService;
 import com.login.util.code.TelecomCode;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureRestDocs
 @Import(RestDocConfiguration.class)
 @Transactional
-@EnableMockMvcUTF8
-@WebAppConfiguration
-@SpringBootTest
-public class TestUserAPI {
-
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private AuthService authService;
-
-    @MockBean
-    private UserTokenService userTokenService;
-
-    @MockBean
-    private AuthenticationInterceptor authenticationInterceptor;
+public class TestUserAPI extends BeanExtends {
 
     /**
      * ID 중복확인 테스트
@@ -147,9 +118,8 @@ public class TestUserAPI {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        willReturn(0L).given(userService).login(reqDto);
-//        willReturn(new UserTokenDto(new User(), "access_token", "refresh_token", LocalDateTime.now())).given(userService).giveLoginAuthToken(any());
-        willDoNothing().given(userTokenService).saveUserToken(any());
+        willReturn(new UserTokenDto(new User(), "access", LocalDateTime.now(), "refresh", LocalDateTime.now())).given(userService).giveLoginAuthToken(any());
+        willReturn(UserTokenDto.builder().accessToken("access").build()).given(userTokenService).saveUserToken(any());
 
         /* When */
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/user/login")

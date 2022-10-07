@@ -13,52 +13,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.login.config.EnableMockMvcUTF8;
+import com.login.config.BeanExtends;
 import com.login.config.RestDocConfiguration;
 import com.login.domain.User;
 import com.login.dto.auth.req.CheckPhoneAuthReqDto;
 import com.login.dto.auth.req.PasswordResetPhoneAuthReqDto;
 import com.login.dto.auth.req.SignInPhoneAuthReqDto;
 import com.login.dto.auth.resp.CheckPhoneAuthRespDto;
-import com.login.service.AuthService;
-import com.login.service.UserService;
 import com.login.util.code.AuthTypeCode;
 import com.login.util.code.TelecomCode;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureRestDocs
 @Import(RestDocConfiguration.class)
 @Transactional
-@EnableMockMvcUTF8
-@WebAppConfiguration
-@SpringBootTest
-public class TestAuthenticationAPI {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private AuthService authService;
-
-    @MockBean
-    private UserService userService;
+public class TestAuthenticationAPI extends BeanExtends {
 
     /**
      * 휴대폰 인증 요청 [회원가입] 테스트

@@ -23,7 +23,6 @@ public class UserInfoRespDto {
     public UserInfoRespDto(User user) throws Exception {
         this.loginId = user.getLoginId();
         this.email = user.getEmail();
-        this.nickname = user.getNickname();
         this.phone = EncryptUtil.decryptAES256(user.getEncryptedPhone());
     }
 

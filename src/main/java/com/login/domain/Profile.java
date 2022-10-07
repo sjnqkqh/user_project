@@ -1,15 +1,19 @@
 package com.login.domain;
 
 import com.login.util.code.YnCode;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +32,7 @@ public class Profile extends CommonBaseDateTime {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long profileId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
@@ -41,17 +45,26 @@ public class Profile extends CommonBaseDateTime {
     @Column(name = "INTRODUCE", length = 3000)
     private String introduce;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
+    private List<ProfileImage> imageList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "MAIN_PROFILE_YN", nullable = false)
+    private YnCode mainProfileYn;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "USE_YN", nullable = false)
     private YnCode useYn;
 
+
     @Builder
-    public Profile(Long profileId, User user, String nickname, String profileImgName, String introduce, YnCode useYn) {
+    public Profile(Long profileId, User user, String nickname, String profileImgName, String introduce, YnCode useYn, YnCode mainProfileYn) {
         this.profileId = profileId;
         this.user = user;
         this.nickname = nickname;
         this.profileImgName = profileImgName;
-        this.introduce = introduce;
+        this.introduce = StringUtils.defaultIfEmpty(introduce,"");
+        this.mainProfileYn = mainProfileYn;
         this.useYn = useYn;
     }
 
